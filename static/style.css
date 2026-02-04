@@ -1,0 +1,16 @@
+body { font-family: Arial, sans-serif; background:#0b0f14; color:#e9eef5; }
+.wrap { max-width: 720px; margin: 40px auto; padding: 0 16px; }
+h1 { margin: 0 0 6px; }
+.sub { margin: 0 0 20px; opacity: .8; }
+.card { background:#121923; border:1px solid #1d2a3a; border-radius:14px; padding:16px; margin: 14px 0; }
+label { display:block; margin:12px 0 6px; opacity:.9; }
+input { width:100%; padding:10px; border-radius:10px; border:1px solid #2a3a50; background:#0b0f14; color:#e9eef5; }
+button { margin-top:14px; width:100%; padding:12px; border-radius:12px; border:0; cursor:pointer; background:#3b82f6; color:white; font-weight:700; }
+.result.ok { border-color:#1f6f3b; }
+.result.attention { border-color:#b7791f; }
+.result.depassement { border-color:#b91c1c; }
+.result.alerte { border-color:#7c3aed; }
+.row { display:flex; gap:14px; justify-content:space-between; }
+.label { opacity:.7; font-size:12px; }
+.value { font-size:18px; font-weight:700; }
+.msg { margin: 12px 0 0; opacity:.95; }

@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiet Budget Check</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <h1>Quiet Budget Check</h1>
+    <p class="sub">Un check rapide. Neutre. Clair.</p>
+
+    <form method="post" action="/check" class="card">
+      <label>Revenu mensuel net</label>
+      <input name="revenu" type="number" step="0.01" required />
+
+      <label>Dépenses fixes mensuelles (loyer + abonnements + etc.)</label>
+      <input name="fixes" type="number" step="0.01" required />
+
+      <label>Dépense du jour</label>
+      <input name="depense" type="number" step="0.01" required />
+
+      <label>Jours restants dans le mois</label>
+      <input name="jours" type="number" min="1" required />
+
+      <button type="submit">Check</button>
+    </form>
+
+    {% if result %}
+      <div class="result card {{ result.etat }}">
+        <div class="row">
+          <div>
+            <div class="label">Budget/jour estimé</div>
+            <div class="value">${{ result.budget_jour }}</div>
+          </div>
+          <div>
+            <div class="label">État</div>
+            <div class="value">{{ result.etat }}</div>
+          </div>
+        </div>
+        <p class="msg">{{ result.message }}</p>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>
