@@ -1,47 +1,165 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Quiet Budget Check</title>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <div class="wrap">
-    <h1>Quiet Budget Check</h1>
-    <p class="sub">Un check rapide. Neutre. Clair.</p>
+  <div class="bg"></div>
 
-    <form method="post" action="/check" class="card">
-      <label>Revenu mensuel net</label>
-      <input name="revenu" type="number" step="0.01" required />
+  <header class="container header">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">
+        <span class="brand-name">Quiet Budget</span>
+        <span class="brand-sub">Check</span>
+      </span>
+    </a>
+    <a class="ghost" href="#pricing">See pricing</a>
+  </header>
 
-      <label>Dépenses fixes mensuelles (loyer + abonnements + etc.)</label>
-      <input name="fixes" type="number" step="0.01" required />
+  <main class="container">
+    <section class="hero">
+      <div class="hero-left">
+        <h1>Your money. Your rules. Just the reality.</h1>
+        <p class="sub">
+          No account. No judgment. A quick check to avoid rough month-ends.
+        </p>
 
-      <label>Dépense du jour</label>
-      <input name="depense" type="number" step="0.01" required />
+        <div class="chips">
+          <span class="chip">No data saved</span>
+          <span class="chip">Instant result</span>
+          <span class="chip">Simple & readable</span>
+        </div>
+      </div>
 
-      <label>Jours restants dans le mois</label>
-      <input name="jours" type="number" min="1" required />
+      <div class="hero-right">
+        <div class="right-rail">
+          <!-- FORM -->
+          <div class="card form-card">
+            <h2>Run your check</h2>
 
-      <button type="submit">Check</button>
-    </form>
+            <form method="post" action="/check" class="form">
+              <label>Net monthly income</label>
+              <input name="income" placeholder="e.g. 3200" required />
 
-    {% if result %}
-      <div class="result card {{ result.etat }}">
-        <div class="row">
-          <div>
-            <div class="label">Budget/jour estimé</div>
-            <div class="value">${{ result.budget_jour }}</div>
+              <label>Monthly fixed expenses (rent + subscriptions + etc.)</label>
+              <input name="fixed" placeholder="e.g. 2100" required />
+
+              <label>Today’s expense</label>
+              <input name="today" placeholder="e.g. 25" required />
+
+              <label>Days left in the month</label>
+              <input name="days_left" placeholder="e.g. 12" required />
+
+              <button type="submit" class="btn-primary">Check</button>
+            </form>
+
+            <div class="result-slot">
+              {% if result %}
+              <div class="result {{ result.status|lower }}">
+                <div class="result-top">
+                  <div>
+                    <div class="muted">Estimated daily budget</div>
+                    <div class="big">${{ result.daily_budget }}</div>
+                    <div class="muted">{{ result.message }}</div>
+                  </div>
+                  <div class="pill">{{ result.status }}</div>
+                </div>
+              </div>
+              {% endif %}
+            </div>
           </div>
-          <div>
-            <div class="label">État</div>
-            <div class="value">{{ result.etat }}</div>
+
+          <!-- LIVE DEMO -->
+          <div class="card demo-card">
+            <div class="demo-head">
+              <span class="dot"></span>
+              <h3>What you’ll get</h3>
+            </div>
+
+            <div class="demo-rows">
+              <div class="row"><span>Monthly income</span><strong id="d_income">$3,200</strong></div>
+              <div class="row"><span>Fixed expenses</span><strong id="d_fixed">$2,100</strong></div>
+              <div class="row"><span>Today’s spend</span><strong id="d_today">$160</strong></div>
+              <div class="row"><span>Days left</span><strong id="d_days">12</strong></div>
+            </div>
+
+            <div class="demo-box" id="d_box">
+              <span class="tag" id="d_tag">DANGER</span>
+              <strong class="demo-budget" id="d_budget">$91/day</strong>
+              <div class="demo-msg" id="d_msg">This puts serious pressure on your month.</div>
+            </div>
           </div>
         </div>
-        <p class="msg">{{ result.message }}</p>
       </div>
-    {% endif %}
-  </div>
+    </section>
+
+    <section class="grid3">
+      <div class="mini">
+        <h3>Clear</h3>
+        <p>You immediately know if it’s fine or putting you at risk.</p>
+      </div>
+      <div class="mini">
+        <h3>Neutral</h3>
+        <p>No moralizing. Just an estimate based on your numbers.</p>
+      </div>
+      <div class="mini">
+        <h3>Actionable</h3>
+        <p>A simple suggestion based on your status (OK / Caution / Danger).</p>
+      </div>
+    </section>
+
+    <section id="pricing" class="pricing">
+      <h2>Pricing</h2>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="tag">Free</div>
+          <h3>Check</h3>
+          <div class="price">$0</div>
+          <ul>
+            <li>Instant calculation</li>
+            <li>OK / Caution / Danger</li>
+            <li>No account</li>
+          </ul>
+          <button class="secondary" disabled>Coming soon</button>
+        </div>
+
+        <div class="price-card featured">
+          <div class="tag">Most useful</div>
+          <h3>Pro</h3>
+          <div class="price">$5<span>/month</span></div>
+          <ul>
+            <li>Check history</li>
+            <li>Savings goals</li>
+            <li>CSV export</li>
+            <li>Email reminders</li>
+          </ul>
+          <button class="primary" disabled>In progress</button>
+          <div class="muted small">We’ll connect it after launch.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq">
+      <h2>FAQ</h2>
+      <details>
+      <summary>Do you store my data?</summary>
+      <p>No. The check is computed then displayed. Nothing is saved.</p>
+    </details>
+    <details>
+      <summary>Is it reliable?</summary>
+      <p>It’s a simple estimate to help you decide quickly. Not financial advice.</p>
+    </details>
+  </section>
+  </main>
+
+  <footer class="container footer">
+    <div class="muted">© Quiet Budget Check — quick estimate</div>
+  </footer>
+
+  <script src="/static/demo.js"></script>
 </body>
 </html>
