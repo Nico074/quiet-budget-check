@@ -17,7 +17,15 @@
         <span class="brand-sub">Check</span>
       </span>
     </a>
-    <a class="ghost" href="#pricing">See pricing</a>
+    <div class="header-actions">
+      {% if user_id %}
+      <a href="/dashboard" class="btn">Dashboard</a>
+      <a href="/logout" class="btn-ghost">Logout</a>
+      {% else %}
+      <a href="/login" class="btn">Log in</a>
+      <a href="/register" class="btn-ghost">Register</a>
+      {% endif %}
+    </div>
   </header>
 
   <main class="container">
@@ -42,16 +50,23 @@
             <h2>Run your check</h2>
 
             <form method="post" action="/check" class="form">
-              <label>Net monthly income</label>
+              <label>Period</label>
+              <select id="period" name="period" class="select-dark" required>
+                <option value="monthly" selected>Monthly</option>
+                <option value="fortnightly">Fortnightly (2 weeks)</option>
+                <option value="weekly">Weekly</option>
+              </select>
+
+              <label>Net income (for this period)</label>
               <input name="income" placeholder="e.g. 3200" required />
 
-              <label>Monthly fixed expenses (rent + subscriptions + etc.)</label>
+              <label>Fixed expenses (for this period)</label>
               <input name="fixed" placeholder="e.g. 2100" required />
 
               <label>Today’s expense</label>
               <input name="today" placeholder="e.g. 25" required />
 
-              <label>Days left in the month</label>
+              <label>Days left in this period</label>
               <input name="days_left" placeholder="e.g. 12" required />
 
               <button type="submit" class="btn-primary">Check</button>
@@ -66,7 +81,15 @@
                     <div class="big">${{ result.daily_budget }}</div>
                     <div class="muted">{{ result.message }}</div>
                   </div>
-                  <div class="pill">{{ result.status }}</div>
+                  <div class="pill">
+                    {% if result.status == "danger" %}
+                      Attention
+                    {% elif result.status == "caution" %}
+                      Caution
+                    {% else %}
+                      OK
+                    {% endif %}
+                  </div>
                 </div>
               </div>
               {% endif %}
@@ -81,10 +104,10 @@
             </div>
 
             <div class="demo-rows">
-              <div class="row"><span>Monthly income</span><strong id="d_income">$3,200</strong></div>
-              <div class="row"><span>Fixed expenses</span><strong id="d_fixed">$2,100</strong></div>
-              <div class="row"><span>Today’s spend</span><strong id="d_today">$160</strong></div>
-              <div class="row"><span>Days left</span><strong id="d_days">12</strong></div>
+              <div class="row"><span id="demoIncomeLabel">Monthly income</span><strong id="demoIncomeVal">$3,200</strong></div>
+              <div class="row"><span id="demoFixedLabel">Fixed expenses</span><strong id="demoFixedVal">$2,100</strong></div>
+              <div class="row"><span id="demoTodayLabel">Today’s spend</span><strong id="demoTodayVal">$160</strong></div>
+              <div class="row"><span id="demoDaysLabel">Days left</span><strong id="demoDaysVal">12</strong></div>
             </div>
 
             <div class="demo-box" id="d_box">

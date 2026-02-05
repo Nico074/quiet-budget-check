@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Dashboard • Quiet Budget Check</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="dash-wrap">
+    <div class="dash-top">
+      <h1>Dashboard</h1>
+      <a class="btn-ghost" href="/logout">Logout</a>
+    </div>
+
+    <div class="dash-stats">
+      <div class="stat">OK <span>{{ stats.ok }}</span></div>
+      <div class="stat">Caution <span>{{ stats.caution }}</span></div>
+      <div class="stat">Danger <span>{{ stats.danger }}</span></div>
+    </div>
+
+    <div class="dash-card">
+      <h2>Recent checks</h2>
+      {% if not history %}
+        <p class="muted">No history yet. Run a check from the home page.</p>
+      {% else %}
+        <div class="table">
+          <div class="row head">
+            <div>Date</div><div>Daily budget</div><div>Status</div><div>Note</div>
+          </div>
+          {% for h in history %}
+            <div class="row">
+              <div>{{ h.created_at.strftime("%Y-%m-%d %H:%M") }}</div>
+              <div>${{ "%.2f"|format(h.daily_budget) }}</div>
+              <div class="pill {{ h.status }}">
+                {% if h.status == "danger" %}
+                  Attention
+                {% elif h.status == "caution" %}
+                  Caution
+                {% else %}
+                  OK
+                {% endif %}
+              </div>
+              <div class="muted">{{ h.message }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <p class="muted"><a href="/">Back to home</a></p>
+  </div>
+</body>
+</html>

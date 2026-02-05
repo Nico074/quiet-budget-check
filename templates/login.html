@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Login • Quiet Budget Check</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <h1>Log in</h1>
+      <p class="muted">Access your Pro dashboard.</p>
+
+      {% if error %}
+        <div class="error">{{ error }}</div>
+      {% endif %}
+
+      <form method="post" action="/login" class="auth-form">
+        <label>Email</label>
+        <input name="email" type="email" required />
+        <label>Password</label>
+        <input name="password" type="password" required />
+        <button type="submit">Log in</button>
+      </form>
+
+      <p class="muted">No account? <a href="/register">Create one</a></p>
+      <p class="muted"><a href="/">Back to home</a></p>
+    </div>
+  </div>
+</body>
+</html>
