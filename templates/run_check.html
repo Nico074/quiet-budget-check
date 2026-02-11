@@ -1,0 +1,358 @@
+{% extends "layout_app.html" %}
+{% block title %}Run a Check • Momentum Labs{% endblock %}
+{% block page_title %}Run a check{% endblock %}
+{% block page_subtitle %}Advanced inputs, recurring items, and live impact preview.{% endblock %}
+{% block page_actions %}<button class="btn primary">Save check</button>{% endblock %}
+{% block content %}
+<div class="run-layout">
+  <div class="card run-form">
+    <div class="form-section">
+      <h2>Scenario swipe</h2>
+      <div class="scenario-row">
+        <button class="ghost scenario-btn" type="button" data-scenario="reduce">Reduce spend -10%</button>
+        <button class="ghost scenario-btn" type="button" data-scenario="income">Add income +$150</button>
+        <button class="ghost scenario-btn" type="button" data-scenario="shift">Shift to savings</button>
+      </div>
+      <div class="help">Instantly preview “what‑ifs” without saving changes.</div>
+    </div>
+
+    <div class="form-section">
+      <h2>Income & essentials</h2>
+      <div class="form-grid">
+        <label>
+          Main income
+          <input type="number" id="income" placeholder="e.g. 3200" />
+          <span class="help">After tax for this period.</span>
+        </label>
+        <label>
+          Fixed expenses
+          <input type="number" id="fixed" placeholder="e.g. 2100" />
+          <span class="help">Rent, bills, subscriptions.</span>
+        </label>
+        <label>
+          Days left in period
+          <input type="number" id="daysLeft" placeholder="e.g. 12" />
+          <span class="help">Used to calculate daily pace.</span>
+        </label>
+        <label>
+          Today’s spend
+          <input type="number" id="today" placeholder="e.g. 95" />
+          <span class="help">What you spent today so far.</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h2>Recurring items</h2>
+      <div class="form-grid">
+        <label>
+          Recurring income
+          <input type="number" id="recurringIncome" placeholder="e.g. 400" />
+          <span class="help">Side gigs, freelance, etc.</span>
+        </label>
+        <label>
+          Recurring expenses
+          <input type="number" id="recurringExpenses" placeholder="e.g. 250" />
+          <span class="help">Payments that happen each period.</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h2>Categories</h2>
+      <div class="form-grid">
+        <label>
+          Food & groceries
+          <input type="number" id="catFood" placeholder="e.g. 420" />
+          <span class="help">Optional budgeting category.</span>
+        </label>
+        <label>
+          Transport
+          <input type="number" id="catTransport" placeholder="e.g. 120" />
+          <span class="help">Fuel, transit, rides.</span>
+        </label>
+        <label>
+          Lifestyle
+          <input type="number" id="catLifestyle" placeholder="e.g. 220" />
+          <span class="help">Dining, fun, and extras.</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h2>Notes & options</h2>
+      <div class="form-grid">
+        <label class="full">
+          Custom notes
+          <textarea id="notes" rows="3" placeholder="Add context for this check..."></textarea>
+          <span class="help">Personal note only visible to you.</span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="saveCheck" />
+          <span>Save this check</span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="compareLast" />
+          <span>Compare to last month</span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="forecastMode" />
+          <span>Forecast mode</span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="addToGoal" />
+          <span>Add to goal</span>
+        </label>
+      </div>
+    </div>
+
+    <details class="advanced-panel">
+      <summary>Advanced momentum insights</summary>
+      <div class="panel-body">
+        <p class="muted">Mock AI insight: You overspend more on Wednesdays. Try shifting one recurring bill to Friday.</p>
+        <div class="panel-row">
+          <span>Forecast sensitivity</span>
+          <span class="pill">Medium</span>
+        </div>
+        <div class="panel-row">
+          <span>Behavior pattern</span>
+          <span class="pill">Evening spikes</span>
+        </div>
+      </div>
+    </details>
+
+    <div class="form-actions">
+      <button class="btn primary">Save check</button>
+      <button class="secondary">Save as template</button>
+      <button class="ghost">Add to goal</button>
+    </div>
+  </div>
+
+  <aside class="card run-preview">
+    <div class="preview-head">
+      <h2>Live preview</h2>
+      <span class="status status-ok live" id="statusTag">OK</span>
+    </div>
+    <div class="momentum-mini">
+      <div class="momentum-aura small" id="momentumAura" data-status="ok"></div>
+      <div class="muted small">Momentum</div>
+    </div>
+    <details class="advanced-panel">
+      <summary>Projection preview</summary>
+      <div class="panel-body">
+        <div class="projection-chart mini">
+          <span style="--p:62%"></span>
+          <span style="--p:56%"></span>
+          <span style="--p:50%"></span>
+          <span style="--p:58%"></span>
+          <span style="--p:63%"></span>
+          <span style="--p:60%"></span>
+        </div>
+        <div class="panel-row">
+          <span>6‑month buffer</span>
+          <span class="pill">Stable</span>
+        </div>
+      </div>
+    </details>
+
+    <div class="preview-metrics">
+      <div>
+        <div class="muted small">Daily budget</div>
+        <div class="big" id="dailyBudget">$0</div>
+      </div>
+      <div>
+        <div class="muted small">Budget impact</div>
+        <div class="big" id="impactValue">—</div>
+      </div>
+    </div>
+
+    <div class="preview-card">
+      <div class="muted small">Status</div>
+      <div class="preview-status" id="statusText">Add numbers to see your pace.</div>
+      <div class="help">We’ll never judge — just show your pace.</div>
+    </div>
+    <div class="preview-card">
+      <div class="muted small">Today → End of period</div>
+      <div class="pace-track">
+        <div class="pace-fill" id="paceFill"></div>
+      </div>
+      <div class="preview-line">
+        <span>Pace vs budget</span>
+        <strong id="paceLabel">—</strong>
+      </div>
+    </div>
+
+    <div class="preview-card">
+      <div class="muted small">Summary</div>
+      <div class="preview-line">
+        <span>Net income</span>
+        <strong id="netIncome">$0</strong>
+      </div>
+      <div class="preview-line">
+        <span>Recurring impact</span>
+        <strong id="recurringImpact">$0</strong>
+      </div>
+      <div class="preview-line">
+        <span>Categories total</span>
+        <strong id="categoriesTotal">$0</strong>
+      </div>
+    </div>
+
+    <div class="preview-card">
+      <div class="muted small">Optional signals</div>
+      <div class="preview-line">
+        <span>Forecast</span>
+        <strong id="forecastState">Off</strong>
+      </div>
+      <div class="preview-line">
+        <span>Compare to last month</span>
+        <strong id="compareState">Off</strong>
+      </div>
+    </div>
+
+    <div class="preview-card">
+      <div class="muted small">Scenario compare</div>
+      <div class="compare-grid">
+        <div>
+          <div class="muted small">Scenario A</div>
+          <div class="big" id="scenarioA">$0</div>
+        </div>
+        <div>
+          <div class="muted small">Scenario B</div>
+          <div class="big" id="scenarioB">$0</div>
+        </div>
+      </div>
+      <div class="preview-line">
+        <span>Delta</span>
+        <strong id="scenarioDelta">—</strong>
+      </div>
+    </div>
+  </aside>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const els = {
+    income: document.getElementById("income"),
+    fixed: document.getElementById("fixed"),
+    daysLeft: document.getElementById("daysLeft"),
+    today: document.getElementById("today"),
+    recurringIncome: document.getElementById("recurringIncome"),
+    recurringExpenses: document.getElementById("recurringExpenses"),
+    catFood: document.getElementById("catFood"),
+    catTransport: document.getElementById("catTransport"),
+    catLifestyle: document.getElementById("catLifestyle"),
+    forecastMode: document.getElementById("forecastMode"),
+    compareLast: document.getElementById("compareLast"),
+    statusTag: document.getElementById("statusTag"),
+    statusText: document.getElementById("statusText"),
+    dailyBudget: document.getElementById("dailyBudget"),
+    impactValue: document.getElementById("impactValue"),
+    netIncome: document.getElementById("netIncome"),
+    recurringImpact: document.getElementById("recurringImpact"),
+    categoriesTotal: document.getElementById("categoriesTotal"),
+    forecastState: document.getElementById("forecastState"),
+    compareState: document.getElementById("compareState"),
+    scenarioA: document.getElementById("scenarioA"),
+    scenarioB: document.getElementById("scenarioB"),
+    scenarioDelta: document.getElementById("scenarioDelta"),
+    paceFill: document.getElementById("paceFill"),
+    paceLabel: document.getElementById("paceLabel"),
+  };
+
+  const toNum = (el) => {
+    const v = parseFloat(el.value);
+    return Number.isFinite(v) ? v : 0;
+  };
+
+  const fmt = (n) => `$${n.toFixed(2)}`;
+
+  const updatePreview = () => {
+    const income = toNum(els.income);
+    const fixed = toNum(els.fixed);
+    const days = toNum(els.daysLeft);
+    const today = toNum(els.today);
+    const recurringIncome = toNum(els.recurringIncome);
+    const recurringExpenses = toNum(els.recurringExpenses);
+    const categories = toNum(els.catFood) + toNum(els.catTransport) + toNum(els.catLifestyle);
+
+    const netIncome = income + recurringIncome - fixed - recurringExpenses - categories;
+    const dailyBudget = days > 0 ? netIncome / days : 0;
+    const impact = dailyBudget - today;
+
+    els.netIncome.textContent = fmt(netIncome);
+    els.recurringImpact.textContent = fmt(recurringIncome - recurringExpenses);
+    els.categoriesTotal.textContent = fmt(categories);
+    els.dailyBudget.textContent = fmt(dailyBudget);
+    els.impactValue.textContent = impact >= 0 ? `+${fmt(Math.abs(impact))}` : `-${fmt(Math.abs(impact))}`;
+
+    let status = "ok";
+    let message = "You’re on track.";
+    if (dailyBudget <= 0) {
+      status = "danger";
+      message = "Funds are low — careful planning helps here.";
+    } else if (today > dailyBudget * 1.3) {
+      status = "danger";
+      message = "Risk: today’s spend is above pace.";
+    } else if (today > dailyBudget) {
+      status = "caution";
+      message = "Watch pace: you’re slightly above budget.";
+    }
+
+    els.statusTag.className = `status status-${status}`;
+    els.statusTag.textContent = status === "ok" ? "OK" : status === "caution" ? "Watch" : "Risk";
+    els.statusText.textContent = message;
+
+    const aura = document.getElementById("momentumAura");
+    if (aura) {
+      aura.dataset.status = status;
+      aura.classList.remove("ok", "caution", "danger");
+      aura.classList.add(status);
+    }
+
+    els.forecastState.textContent = els.forecastMode.checked ? "On" : "Off";
+    els.compareState.textContent = els.compareLast.checked ? "On" : "Off";
+
+    const scenarioA = dailyBudget;
+    const scenarioB = els.compareLast.checked ? dailyBudget * 1.1 : dailyBudget * 0.9;
+    els.scenarioA.textContent = fmt(scenarioA);
+    els.scenarioB.textContent = fmt(scenarioB);
+    const delta = scenarioB - scenarioA;
+    els.scenarioDelta.textContent = delta >= 0 ? `+${fmt(delta)}` : `-${fmt(Math.abs(delta))}`;
+
+    const paceRatio = dailyBudget > 0 ? Math.min(2, today / dailyBudget) : 0;
+    if (els.paceFill) {
+      els.paceFill.style.width = `${Math.min(100, paceRatio * 50)}%`;
+    }
+    if (els.paceLabel) {
+      els.paceLabel.textContent = dailyBudget > 0 ? `${(paceRatio * 100).toFixed(0)}% of pace` : "—";
+    }
+  };
+
+  document.querySelectorAll("input, textarea").forEach((el) => {
+    el.addEventListener("input", updatePreview);
+    el.addEventListener("change", updatePreview);
+  });
+
+  document.querySelectorAll(".scenario-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const type = btn.dataset.scenario;
+      if (type === "reduce") {
+        els.today.value = (toNum(els.today) * 0.9).toFixed(0);
+      }
+      if (type === "income") {
+        els.recurringIncome.value = (toNum(els.recurringIncome) + 150).toFixed(0);
+      }
+      if (type === "shift") {
+        els.catLifestyle.value = Math.max(0, toNum(els.catLifestyle) - 50).toFixed(0);
+        els.catFood.value = (toNum(els.catFood) + 25).toFixed(0);
+        els.catTransport.value = (toNum(els.catTransport) + 25).toFixed(0);
+      }
+      updatePreview();
+    });
+  });
+
+  updatePreview();
+</script>
+{% endblock %}

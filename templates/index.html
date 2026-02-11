@@ -1,22 +1,19 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Quiet Budget Check</title>
-  <link rel="stylesheet" href="/static/style.css" />
-</head>
-<body>
-  <div class="bg"></div>
-
-  <header class="container header">
+{% extends "layout_public.html" %}
+{% block title %}Momentum Labs{% endblock %}
+{% block body %}
+  <header class="container header sticky">
     <a class="brand" href="/">
       <span class="brand-mark" aria-hidden="true"></span>
       <span class="brand-text">
-        <span class="brand-name">Quiet Budget</span>
-        <span class="brand-sub">Check</span>
+        <span class="brand-name">Momentum Labs</span>
+        <span class="brand-sub">Behavioral Intelligence</span>
       </span>
     </a>
+    <nav class="header-nav">
+      <a href="/pricing">Pricing</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </nav>
     <div class="header-actions">
       {% if user_id %}
       <a href="/dashboard" class="btn">Dashboard</a>
@@ -29,17 +26,20 @@
   </header>
 
   <main class="container">
-    <section class="hero">
+    <section class="hero landing-hero">
       <div class="hero-left">
         <div class="hero-intro">
-          <h1>Your money. Your rules. Made clear.</h1>
+          <h1>Your money has momentum. We make it visible.</h1>
           <p class="sub">
-            No account. No judgment. A quick check to avoid end-of-month stress.
+            A Behavioral Financial Intelligence Platform that makes rhythm, drift, and stability clear — fast.
           </p>
           <div class="chips chips-left">
-            <span class="chip">No data saved</span>
-            <span class="chip">Instant result</span>
-            <span class="chip">Simple & readable</span>
+            <span class="chip">Financial Health Score</span>
+            <span class="chip">Momentum Engine</span>
+            <span class="chip">Calm guidance</span>
+          </div>
+          <div class="hero-cta">
+            <a class="btn primary" href="/register">Start free</a>
           </div>
         </div>
       </div>
@@ -67,11 +67,11 @@
 
       <div class="hero-right">
         <div class="right-rail">
-          <!-- FORM -->
           <div class="card form-card">
             <h2>Run your check</h2>
 
             <form method="post" action="/check" class="form compact-form">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
               <div class="grid">
                 <div>
                   <label>Period</label>
@@ -119,72 +119,180 @@
               </div>
               {% endif %}
             </div>
+            {% if error %}
+            <div class="form-error">{{ error }}</div>
+            {% endif %}
           </div>
         </div>
       </div>
     </section>
 
-    <section class="grid3">
-      <div class="mini">
-        <h3>Clear</h3>
-        <p>You immediately know if it’s fine or putting you at risk.</p>
+    <section class="section-block">
+      <div class="section-head">
+        <h2>How it works</h2>
+        <p class="muted">Simple first. Deep when you want it.</p>
       </div>
-      <div class="mini">
-        <h3>Neutral</h3>
-        <p>No moralizing. Just an estimate based on your numbers.</p>
-      </div>
-      <div class="mini">
-        <h3>Actionable</h3>
-        <p>A simple suggestion based on your status (OK / Caution / Danger).</p>
-      </div>
-    </section>
-
-    <section id="pricing" class="pricing">
-      <h2>Pricing</h2>
-      <div class="pricing-grid">
-        <div class="price-card">
-          <div class="tag">Free</div>
-          <h3>Check</h3>
-          <div class="price">$0</div>
-          <ul>
-            <li>Instant calculation</li>
-            <li>OK / Caution / Danger</li>
-            <li>No account</li>
-          </ul>
-          <button class="secondary" disabled>Coming soon</button>
+      <div class="card-grid">
+        <div class="card">
+          <h2>1. Capture rhythm</h2>
+          <p class="muted">We translate spending pace into behavioral signals.</p>
         </div>
-
-        <div class="price-card featured">
-          <div class="tag">Most useful</div>
-          <h3>Pro</h3>
-          <div class="price">$5<span>/month</span></div>
-          <ul>
-            <li>Check history</li>
-            <li>Savings goals</li>
-            <li>CSV export</li>
-            <li>Email reminders</li>
-          </ul>
-          <button class="primary" disabled>In progress</button>
-          <div class="muted small">We’ll connect it after launch.</div>
+        <div class="card">
+          <h2>2. See momentum</h2>
+          <p class="muted">A live engine shows drift, stability, and acceleration.</p>
+        </div>
+        <div class="card">
+          <h2>3. Act calmly</h2>
+          <p class="muted">Guided adjustments reduce anxiety and decision time.</p>
         </div>
       </div>
     </section>
 
-    <section class="faq">
-      <h2>FAQ</h2>
+    <section class="section-block">
+      <div class="section-head">
+        <h2>Features</h2>
+        <p class="muted">Behavioral intelligence, not just tracking.</p>
+      </div>
+      <div class="bento-grid landing-bento">
+        <div class="card bento-card wide momentum-hero">
+          <div class="bento-title">Momentum Engine</div>
+          <div class="bento-sub">Visualizes acceleration, drift, and stability in real time.</div>
+          <div class="momentum-track">
+            <div class="momentum-aura"></div>
+            <div class="momentum-line"></div>
+          </div>
+          <div class="momentum-meta">
+            <span>Steady</span>
+            <span class="muted">Reactive, not harsh</span>
+            <span>Drifting</span>
+          </div>
+        </div>
+        <div class="card bento-card">
+          <div class="bento-title">Behavioral intelligence</div>
+          <div class="bento-sub">We detect rhythm shifts, friction, and deviation patterns early.</div>
+          <div class="bento-pill">Pattern detection</div>
+        </div>
+        <div class="card bento-card">
+          <div class="bento-title">Financial Health Score</div>
+          <div class="bento-sub">A live score reflecting stability, cushion, and drift.</div>
+          <div class="score-ring" style="--score: 78;">
+            <span class="score-value">78</span>
+            <span class="score-trend up">▲ +4</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-head">
+        <h2>Pro value</h2>
+        <p class="muted">Pro reduces anxiety, saves decision time, and detects drift early.</p>
+      </div>
+      <div class="plan-grid">
+        <div class="plan-card">
+          <div class="plan-title">Free</div>
+          <div class="plan-price">$0</div>
+          <ul class="plan-list">
+            <li>Quick check</li>
+            <li>Basic Health Score</li>
+            <li>Simple momentum</li>
+          </ul>
+        </div>
+        <div class="plan-card featured">
+          <div class="plan-title">Pro</div>
+          <div class="plan-price">$5<span>/month</span></div>
+          <ul class="plan-list">
+            <li>Full Momentum analytics</li>
+            <li>Behavioral drift detection</li>
+            <li>6‑month projections</li>
+            <li>AI Companion full mode</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block testimonials">
+      <div class="section-head">
+        <h2>Social proof</h2>
+        <p class="muted">Real calm, real outcomes.</p>
+      </div>
+      <div class="card-grid">
+        <div class="card">
+          <p>“I stopped second‑guessing. Momentum makes my next move obvious.”</p>
+          <div class="muted small">— Sam, product lead</div>
+        </div>
+        <div class="card">
+          <p>“The score and projections cut my budgeting time in half.”</p>
+          <div class="muted small">— Alex, freelancer</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block faq">
+      <div class="section-head">
+        <h2>FAQ</h2>
+        <p class="muted">Clear answers, no jargon.</p>
+      </div>
       <details>
-      <summary>Do you store my data?</summary>
-      <p>No. The check is computed then displayed. Nothing is saved.</p>
-    </details>
-    <details>
-      <summary>Is it reliable?</summary>
-      <p>It’s a simple estimate to help you decide quickly. Not financial advice.</p>
-    </details>
-  </section>
-  </main>
+        <summary>Do you store my data?</summary>
+        <p>Yes for logged-in users. We store only what’s needed to power your score and history.</p>
+      </details>
+      <details>
+        <summary>Is the Health Score reliable?</summary>
+        <p>It’s based on stability, drift, cushion, and consistency—not credit scoring.</p>
+      </details>
+      <details>
+        <summary>How does Momentum Engine work?</summary>
+        <p>It visualizes your pace and drift in near real time using your inputs.</p>
+      </details>
+      <details>
+        <summary>Can I cancel Pro anytime?</summary>
+        <p>Yes. You can downgrade anytime without penalties.</p>
+      </details>
+      <details>
+        <summary>Is this financial advice?</summary>
+        <p>No. It’s a behavioral signal to guide decisions, not a guarantee.</p>
+      </details>
+      <details>
+        <summary>How do I get support?</summary>
+        <p>Use the in‑app assistant or contact support from your account page.</p>
+      </details>
+    </section>
 
-  <footer class="container footer">
-    <div class="muted">© Quiet Budget Check — quick estimate</div>
+    </main>
+
+  <footer class="footer footer-full">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand-name">Momentum Labs</div>
+        <div class="muted small">Behavioral Financial Intelligence Platform</div>
+      </div>
+      <div>
+        <div class="footer-title">Product</div>
+        <a href="/upgrade">Pro</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/run-check">Run a check</a>
+      </div>
+      <div>
+        <div class="footer-title">Company</div>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div>
+        <div class="footer-title">Legal</div>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+      </div>
+      <div>
+        <div class="footer-title">Social</div>
+        <a href="#">X / Twitter</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">YouTube</a>
+      </div>
+    </div>
+    <div class="container muted small footer-bottom">© Momentum Labs — Behavioral Financial Intelligence Platform</div>
   </footer>
 
   <script src="/static/demo.js"></script>
@@ -208,5 +316,5 @@
       window.scrollTo(0, 0);
     }
   </script>
-</body>
-</html>
+{% endblock %}
+

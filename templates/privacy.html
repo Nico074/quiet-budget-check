@@ -1,0 +1,78 @@
+{% extends "layout_public.html" %}
+{% block title %}Privacy • Momentum Labs{% endblock %}
+{% block body %}
+  <header class="container header sticky">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">
+        <span class="brand-name">Momentum Labs</span>
+        <span class="brand-sub">Behavioral Intelligence</span>
+      </span>
+    </a>
+    <nav class="header-nav">
+      <a href="/pricing">Pricing</a>
+      <a href="/privacy" class="active">Privacy</a>
+      <a href="/terms">Terms</a>
+    </nav>
+    <div class="header-actions">
+      {% if user_id %}
+      <a href="/dashboard" class="btn">Dashboard</a>
+      <a href="/logout" class="btn-ghost">Logout</a>
+      {% else %}
+      <a href="/login" class="btn">Log in</a>
+      <a href="/register" class="btn-ghost">Register</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="section-block">
+      <div class="section-head">
+        <h2>Privacy and data handling</h2>
+        <p class="muted">We keep data minimal and purpose‑driven.</p>
+      </div>
+      <div class="card">
+        <h3>What we store</h3>
+        <p class="muted">We store your checks, score history, and account profile to power the app.</p>
+        <h3>What we avoid</h3>
+        <p class="muted">We do not sell personal data. We do not store bank credentials.</p>
+        <h3>Control</h3>
+        <p class="muted">You can request deletion and downgrade at any time.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer footer-full">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand-name">Momentum Labs</div>
+        <div class="muted small">Behavioral Financial Intelligence Platform</div>
+      </div>
+      <div>
+        <div class="footer-title">Product</div>
+        <a href="/pricing">Pricing</a>
+        <a href="/upgrade">Upgrade</a>
+        <a href="/dashboard">Dashboard</a>
+      </div>
+      <div>
+        <div class="footer-title">Company</div>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div>
+        <div class="footer-title">Legal</div>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="#">Security</a>
+      </div>
+      <div>
+        <div class="footer-title">Social</div>
+        <a href="#">X / Twitter</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">YouTube</a>
+      </div>
+    </div>
+    <div class="container muted small footer-bottom">© Momentum Labs — Behavioral Financial Intelligence Platform</div>
+  </footer>
+{% endblock %}

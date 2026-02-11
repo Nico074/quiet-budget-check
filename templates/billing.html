@@ -1,0 +1,51 @@
+{% extends "layout_app.html" %}
+{% block title %}Billing • Momentum Labs{% endblock %}
+{% block page_title %}Billing{% endblock %}
+{% block page_subtitle %}Manage your plan and payment history.{% endblock %}
+{% block page_actions %}
+  {% if plan_state != "pro" %}
+  <a class="btn primary" href="/upgrade">Upgrade</a>
+  {% else %}
+  <a class="btn primary" href="/billing/portal">Manage subscription</a>
+  {% endif %}
+{% endblock %}
+{% block content %}
+<div class="card-grid">
+  <div class="card">
+    <h2>Current plan</h2>
+    <div class="plan-row">
+      <div>
+        <div class="muted small">Plan</div>
+        <div class="big">{{ "Pro" if plan_state == "pro" else "Free" }}</div>
+      </div>
+      <div>
+        <div class="muted small">Next billing date</div>
+        <div class="big">{{ "Feb 28, 2026" if plan_state == "pro" else "—" }}</div>
+      </div>
+    </div>
+    <ul class="plan-list">
+      <li>Advanced checks & scenarios</li>
+      <li>Goal tracking and templates</li>
+      <li>Momentum insights</li>
+    </ul>
+    <div class="button-row">
+      <button class="secondary">{{ "Manage plan" if plan_state == "pro" else "Downgrade" }}</button>
+      {% if plan_state != "pro" %}
+      <a class="btn primary" href="/upgrade">Upgrade to Pro</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="card">
+    <h2>Payment history</h2>
+    <div class="empty-state compact">
+      <div class="empty-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" role="img"><path d="M4 7h16v10H4z" /><path d="M7 11h4" /></svg>
+      </div>
+      <div class="empty-title">No payments yet</div>
+      <div class="muted">You’re on the Free plan. Upgrade anytime.</div>
+      <button class="btn primary">Upgrade to Pro</button>
+      <div class="empty-hint">Cancel anytime, no questions asked.</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

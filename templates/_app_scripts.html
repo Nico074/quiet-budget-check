@@ -1,0 +1,22 @@
+<script>
+  window.addEventListener("error", () => {
+    const existing = document.querySelector(".app-error");
+    if (existing) return;
+    const banner = document.createElement("div");
+    banner.className = "app-error";
+    banner.textContent = "We hit a small glitch. Your data is safe — refresh if needed.";
+    document.body.appendChild(banner);
+  });
+</script>
+<script>
+  const navToggle = document.getElementById("navToggle");
+  if (navToggle) {
+    navToggle.addEventListener("click", () => {
+      document.body.classList.toggle("nav-open");
+    });
+  }
+</script>
+<script src="/static/engines/healthScoreEngine.js" defer></script>
+<script src="/static/engines/momentumEngine.js" defer></script>
+<script src="/static/engines/projectionEngine.js" defer></script>
+<script src="/static/engines/streakEngine.js" defer></script>

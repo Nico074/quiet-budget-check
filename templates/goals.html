@@ -1,0 +1,57 @@
+{% extends "layout_app.html" %}
+{% block title %}Goals • Momentum Labs{% endblock %}
+{% block page_title %}Goals{% endblock %}
+{% block page_subtitle %}Track savings goals and celebrate progress.{% endblock %}
+{% block page_actions %}<button class="btn primary">Add goal</button>{% endblock %}
+{% block content %}
+<div class="card-grid goals-grid">
+  <div class="card goal-card">
+    <div class="goal-head">
+      <h2>Emergency fund</h2>
+      <span class="pill">60%</span>
+    </div>
+    <div class="progress-bar"><span style="width:60%"></span></div>
+    <div class="muted small">$3,000 of $5,000</div>
+    <div class="reward-badge">On track ✨</div>
+  </div>
+  <div class="card goal-card">
+    <div class="goal-head">
+      <h2>New laptop</h2>
+      <span class="pill">35%</span>
+    </div>
+    <div class="progress-bar warn"><span style="width:35%"></span></div>
+    <div class="muted small">$700 of $2,000</div>
+  </div>
+  <div class="card goal-card">
+    <div class="goal-head">
+      <h2>Trip fund</h2>
+      <span class="pill">18%</span>
+    </div>
+    <div class="progress-bar bad"><span style="width:18%"></span></div>
+    <div class="muted small">$450 of $2,500</div>
+    <div class="reward-badge calm">Keep going</div>
+  </div>
+  <div class="card empty-state">
+    <div class="empty-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" role="img"><path d="M4 16l6-6 4 4 6-8" /><path d="M20 6v6h-6" /></svg>
+    </div>
+    <div class="empty-title">Create your first goal</div>
+    <div class="muted">Turn a wish into a plan with one simple target.</div>
+    <button class="btn primary">Add goal</button>
+    <div class="empty-hint">We’ll keep progress gentle and motivating.</div>
+  </div>
+  <div class="card goal-card momentum-panel">
+    <div class="bento-title">Momentum Engine</div>
+    <div class="bento-sub">See how daily pace supports your goals.</div>
+    <div class="momentum-track">
+      <div class="momentum-aura"></div>
+      <div class="momentum-line"></div>
+    </div>
+    <div class="momentum-meta">
+      <span>Steady</span>
+      <span class="muted">Goal‑aligned</span>
+      <span>Drifting</span>
+    </div>
+  </div>
+</div>
+{% endblock %}

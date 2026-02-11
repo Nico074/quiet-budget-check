@@ -1,0 +1,50 @@
+{% extends "layout_app.html" %}
+{% block title %}Wallet • Momentum Labs{% endblock %}
+{% block page_title %}Wallet overview{% endblock %}
+{% block page_subtitle %}Your monthly allocation and category breakdown.{% endblock %}
+{% block page_actions %}<button class="btn primary">Edit allocations</button>{% endblock %}
+{% block content %}
+<div class="card-grid">
+  <div class="card">
+    <h2>Overview summary</h2>
+    <div class="stats-row">
+      <div>
+        <div class="muted small">Income</div>
+        <div class="big">$3,200</div>
+      </div>
+      <div>
+        <div class="muted small">Fixed</div>
+        <div class="big">$2,100</div>
+      </div>
+      <div>
+        <div class="muted small">Flexible</div>
+        <div class="big">$1,100</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Monthly allocation</h2>
+    <div class="empty-state compact">
+      <div class="empty-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" role="img"><path d="M3 7h18v10H3z" /><path d="M7 11h4" /></svg>
+      </div>
+      <div class="empty-title">Set your allocation</div>
+      <div class="muted">Define how you want income split across needs and goals.</div>
+      <button class="btn primary">Build allocation</button>
+      <div class="empty-hint">You can adjust anytime.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Category breakdown</h2>
+    <div class="empty-state compact">
+      <div class="empty-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" role="img"><path d="M4 4h8v8H4z" /><path d="M12 12h8v8h-8z" /><path d="M12 4h8v6h-8z" /></svg>
+      </div>
+      <div class="empty-title">No categories yet</div>
+      <div class="muted">Add your first category to see the breakdown.</div>
+      <button class="btn primary">Add category</button>
+      <div class="empty-hint">Keep it simple: 3–5 categories is enough.</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

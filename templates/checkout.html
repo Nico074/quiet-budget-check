@@ -1,0 +1,12 @@
+{% extends "layout_app.html" %}
+{% block title %}Checkout • Momentum Labs{% endblock %}
+{% block page_title %}Checkout{% endblock %}
+{% block page_subtitle %}Secure Stripe checkout is ready.{% endblock %}
+{% block page_actions %}<a class="btn primary" href="/upgrade">Back to upgrade</a>{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Redirecting to Stripe</h2>
+  <p class="muted">If you’re not redirected, return to Upgrade and try again.</p>
+  <a class="btn primary" href="/upgrade">Go to upgrade</a>
+</div>
+{% endblock %}

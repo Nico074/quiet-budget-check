@@ -1,0 +1,132 @@
+{% extends "layout_app.html" %}
+{% block title %}Account • Momentum Labs{% endblock %}
+{% block page_title %}Account{% endblock %}
+{% block page_subtitle %}Profile, preferences, and security in one place.{% endblock %}
+{% block page_actions %}<button class="btn primary" type="button">Save all</button>{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="tabs">
+    <button class="tab-btn active" type="button" data-tab="profile">Profile info</button>
+    <button class="tab-btn" type="button" data-tab="preferences">Preferences</button>
+    <button class="tab-btn" type="button" data-tab="security">Security</button>
+  </div>
+
+  <div class="tab-panels">
+    <div class="tab-panel active" data-panel="profile">
+      {% if error %}
+      <div class="form-error">{{ error }}</div>
+      {% endif %}
+      <form method="post" action="/profile" class="profile-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+        <div class="grid">
+          <div>
+            <label>First name</label>
+            <input name="first_name" value="{{ profile.first_name or '' }}" />
+            <div class="help">Shown on your dashboard greeting.</div>
+          </div>
+          <div>
+            <label>Last name</label>
+            <input name="last_name" value="{{ profile.last_name or '' }}" />
+          </div>
+          <div class="full">
+            <label>Address</label>
+            <input name="address" value="{{ profile.address or '' }}" />
+            <div class="help">Optional. Helps with future regional insights.</div>
+          </div>
+          <div>
+            <label>City</label>
+            <input name="city" value="{{ profile.city or '' }}" />
+          </div>
+          <div>
+            <label>Country</label>
+            <input name="country" value="{{ profile.country or '' }}" />
+          </div>
+          <div class="full">
+            <label>Phone</label>
+            <input name="phone" value="{{ profile.phone or '' }}" />
+            <div class="help">Only used for account recovery.</div>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button class="btn-primary" type="submit">Save profile</button>
+          <button class="btn-ghost" type="button">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="tab-panel" data-panel="preferences">
+      <div class="empty-state compact">
+        <div class="empty-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img"><path d="M12 3l2 3 4 .5-3 2.5.9 4-3.9-2-3.9 2 .9-4-3-2.5 4-.5z" /></svg>
+        </div>
+        <div class="empty-title">Preferences coming soon</div>
+        <div class="muted">We’re building gentle reminders and default views.</div>
+        <button class="btn primary">Join waitlist</button>
+        <div class="empty-hint">You’ll be notified when it’s ready.</div>
+      </div>
+      <div class="card-grid">
+        <div class="card">
+          <h2>Email updates</h2>
+          <p class="muted">Weekly summaries and milestone alerts.</p>
+          <button class="secondary">Manage</button>
+        </div>
+        <div class="card">
+          <h2>Default period</h2>
+          <p class="muted">Monthly, fortnightly, or weekly checks.</p>
+          <button class="secondary">Set default</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-panel="security">
+      <div class="empty-state compact">
+        <div class="empty-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6z" /><path d="M9 12l2 2 4-4" /></svg>
+        </div>
+        <div class="empty-title">Security center</div>
+        <div class="muted">Keep your account safe with quick checks.</div>
+        <button class="btn primary">Review security</button>
+        <div class="empty-hint">We’ll surface any unusual activity here.</div>
+      </div>
+      <div class="card-grid">
+        <div class="card">
+          <h2>Password</h2>
+          <p class="muted">Update your password regularly.</p>
+          <button class="secondary">Change password</button>
+        </div>
+        <div class="card">
+          <h2>Sessions</h2>
+          <p class="muted">Active devices and sign-outs.</p>
+          <button class="secondary">Review sessions</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const tabs = document.querySelectorAll(".tab-btn");
+  const panels = document.querySelectorAll(".tab-panel");
+  const activateTab = (name) => {
+    tabs.forEach((b) => b.classList.remove("active"));
+    panels.forEach((p) => p.classList.remove("active"));
+    const btn = document.querySelector(`.tab-btn[data-tab='${name}']`);
+    const panel = document.querySelector(`.tab-panel[data-panel='${name}']`);
+    if (btn) btn.classList.add("active");
+    if (panel) panel.classList.add("active");
+  };
+  tabs.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const target = btn.getAttribute("data-tab");
+      activateTab(target);
+      history.replaceState({}, "", `#${target}`);
+    });
+  });
+  if (window.location.hash) {
+    const target = window.location.hash.replace("#", "");
+    activateTab(target);
+  }
+</script>
+{% endblock %}

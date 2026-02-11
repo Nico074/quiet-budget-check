@@ -1,0 +1,135 @@
+{% extends "layout_public.html" %}
+{% block title %}Pricing • Momentum Labs{% endblock %}
+{% block body %}
+  <header class="container header sticky">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">
+        <span class="brand-name">Momentum Labs</span>
+        <span class="brand-sub">Behavioral Intelligence</span>
+      </span>
+    </a>
+    <nav class="header-nav">
+      <a href="/pricing">Pricing</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </nav>
+    <div class="header-actions">
+      {% if user_id %}
+      <a href="/dashboard" class="btn">Dashboard</a>
+      <a href="/logout" class="btn-ghost">Logout</a>
+      {% else %}
+      <a href="/login" class="btn">Log in</a>
+      <a href="/register" class="btn-ghost">Register</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="section-block">
+      <div class="section-head">
+        <h2>Simple plans. Behavioral clarity.</h2>
+        <p class="muted">Free for quick checks. Pro for momentum control.</p>
+      </div>
+      <div class="plan-grid">
+        <div class="plan-card">
+          <div class="plan-title">Free</div>
+          <div class="plan-price">$0</div>
+          <ul class="plan-list">
+            <li>Quick check</li>
+            <li>Basic Health Score</li>
+            <li>Simple momentum indicator</li>
+          </ul>
+        </div>
+        <div class="plan-card featured">
+          <div class="plan-title">Pro</div>
+          <div class="plan-price">$5<span>/month</span></div>
+          <ul class="plan-list">
+            <li>Full Momentum analytics</li>
+            <li>Behavioral streaks + projections</li>
+            <li>AI Companion guidance</li>
+            <li>Scenario comparison</li>
+          </ul>
+        </div>
+      </div>
+      <div class="button-row">
+        <a class="btn primary" href="/register">Start free</a>
+        <a class="btn" href="/upgrade">Upgrade to Pro</a>
+      </div>
+    </section>
+
+    <section class="section-block testimonials">
+      <div class="section-head">
+        <h2>Real outcomes</h2>
+        <p class="muted">Less anxiety. Faster decisions. Better momentum.</p>
+      </div>
+      <div class="card-grid">
+        <div class="card">
+          <p>“Momentum Labs gives me a calm plan for the week.”</p>
+          <div class="muted small">— Lina, consultant</div>
+        </div>
+        <div class="card">
+          <p>“Pro helped me spot drift before it became stress.”</p>
+          <div class="muted small">— Jordan, founder</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block faq">
+      <div class="section-head">
+        <h2>FAQ</h2>
+        <p class="muted">Pricing, security, and plan changes.</p>
+      </div>
+      <details>
+        <summary>Can I cancel anytime?</summary>
+        <p>Yes. You can downgrade anytime without penalties.</p>
+      </details>
+      <details>
+        <summary>Is my data private?</summary>
+        <p>We store only what’s required to power your score and history.</p>
+      </details>
+      <details>
+        <summary>Do you offer annual pricing?</summary>
+        <p>Annual is coming soon with a discount. For now, monthly stays simple.</p>
+      </details>
+      <details>
+        <summary>Is this financial advice?</summary>
+        <p>No. Momentum Labs provides behavioral signals, not guarantees.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="footer footer-full">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand-name">Momentum Labs</div>
+        <div class="muted small">Behavioral Financial Intelligence Platform</div>
+      </div>
+      <div>
+        <div class="footer-title">Product</div>
+        <a href="/pricing">Pricing</a>
+        <a href="/upgrade">Upgrade</a>
+        <a href="/dashboard">Dashboard</a>
+      </div>
+      <div>
+        <div class="footer-title">Company</div>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div>
+        <div class="footer-title">Legal</div>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="#">Security</a>
+      </div>
+      <div>
+        <div class="footer-title">Social</div>
+        <a href="#">X / Twitter</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">YouTube</a>
+      </div>
+    </div>
+    <div class="container muted small footer-bottom">© Momentum Labs — Behavioral Financial Intelligence Platform</div>
+  </footer>
+{% endblock %}

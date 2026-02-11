@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Register • Quiet Budget Check</title>
+  <title>Register • Momentum Labs</title>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
@@ -12,8 +12,8 @@
       <a class="brand auth-brand" href="/">
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-text">
-          <span class="brand-name">Quiet Budget</span>
-          <span class="brand-sub">Check</span>
+          <span class="brand-name">Momentum Labs</span>
+          <span class="brand-sub">Behavioral Intelligence</span>
         </span>
       </a>
       <h1 class="auth-title">Create account</h1>
@@ -23,8 +23,9 @@
         <div class="error">{{ error }}</div>
       {% endif %}
 
-      <form method="post" action="/register" class="auth-form">
-        <label>Email</label>
+    <form method="post" action="/register" class="auth-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+      <label>Email</label>
         <input name="email" type="email" required />
         <label>Password</label>
         <input name="password" type="password" required minlength="6" />

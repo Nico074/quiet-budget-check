@@ -1,0 +1,39 @@
+{% extends "layout_app.html" %}
+{% block title %}History • Momentum Labs{% endblock %}
+{% block page_title %}History{% endblock %}
+{% block page_subtitle %}All your recent checks and outcomes.{% endblock %}
+{% block page_actions %}<a class="btn primary" href="/run-check">Run a check</a>{% endblock %}
+{% block content %}
+<div class="dash-card">
+  <div class="dash-card-head">
+    <h2>Recent checks</h2>
+    <span class="muted small">Last 50 checks</span>
+  </div>
+  {% if not history %}
+    <div class="empty-state">
+      <div class="empty-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" role="img"><path d="M6 4h12M6 10h12M6 16h6" /><path d="M18 16l2 2-2 2" /></svg>
+      </div>
+      <div class="empty-title">Nothing to show yet</div>
+      <div class="muted">Your next check will appear here automatically.</div>
+      <a class="btn primary" href="/run-check">Run a check</a>
+      <div class="empty-hint">We’ll keep your pace history tidy and readable.</div>
+    </div>
+  {% else %}
+    <div class="table">
+      <div class="row head">
+        <div>Date</div><div>Daily budget</div><div>Status</div><div>Note</div><div>Action</div>
+      </div>
+      {% for h in history %}
+        <div class="row">
+          <div>{{ h.created_at.strftime("%Y-%m-%d %H:%M") }}</div>
+          <div>${{ "%.2f"|format(h.daily_budget) }}</div>
+          <div class="status status-{{ h.status }}">{{ h.status }}</div>
+          <div class="muted">{{ h.message }}</div>
+          <div><a class="row-action" href="/history">View details</a></div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

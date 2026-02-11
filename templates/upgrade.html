@@ -1,0 +1,132 @@
+{% extends "layout_app.html" %}
+{% block title %}Upgrade • Momentum Labs{% endblock %}
+{% block page_title %}Upgrade to Pro{% endblock %}
+{% block page_subtitle %}A gentle upgrade for smarter budgeting and calm control.{% endblock %}
+{% block page_actions %}<a class="btn primary" href="/billing">View billing</a>{% endblock %}
+{% block content %}
+<div class="pricing-layout">
+  <section class="card before-after">
+    <div class="bento-title">Before vs after</div>
+    <div class="bento-sub">See how Pro changes your emotional load.</div>
+    <div class="before-after-grid">
+      <div class="before-card">
+        <div class="muted small">Before</div>
+        <p>Guessing. Reacting late. Small stress stacking up.</p>
+      </div>
+      <div class="after-card">
+        <div class="muted small">After</div>
+        <p>Momentum stays calm. You anticipate and adjust early.</p>
+      </div>
+    </div>
+  </section>
+  <section class="card plan-compare">
+    <div class="compare-head">
+      <h2>Plan comparison</h2>
+      <div class="pill">Save 20% yearly</div>
+    </div>
+    <div class="plan-toggle">
+      <button class="toggle-btn active" type="button" data-plan="monthly">Monthly</button>
+      <button class="toggle-btn" type="button" data-plan="yearly">Yearly</button>
+    </div>
+
+    <div class="plan-grid">
+      <div class="plan-card">
+        <div class="plan-title">Free</div>
+        <div class="plan-price">$0</div>
+        <ul class="plan-list">
+          <li>Quick checks</li>
+          <li>OK / Watch / Risk</li>
+          <li>Simple inputs</li>
+        </ul>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-title">Pro</div>
+        <div class="plan-price" id="proPrice">$5<span>/month</span></div>
+        <ul class="plan-list">
+          <li>Advanced inputs</li>
+          <li>Goal tracking</li>
+          <li>History insights</li>
+          <li>Templates & comparisons</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="benefits">
+      <h3>Why Pro</h3>
+      <ul class="plan-list">
+        <li>Keep recurring income and expenses organized.</li>
+        <li>See your pace at a glance with live previews.</li>
+        <li>Turn goals into calm, visible progress.</li>
+        <li>Export or review trends when you need them.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="card checkout">
+    <div class="checkout-head">
+      <h2>Checkout</h2>
+      <div class="muted small">Mock checkout — Stripe integration comes next.</div>
+    </div>
+
+    {% if error %}
+    <div class="form-error">{{ error }}</div>
+    {% endif %}
+
+    <div class="form-grid">
+      <label class="full">
+        Email
+        <input type="email" value="{{ email or '' }}" placeholder="you@email.com" />
+        <span class="help">Used for receipts and account access.</span>
+      </label>
+      <label class="full">
+        Card details
+        <input type="text" placeholder="Card number" />
+        <span class="help">Secure payments placeholder.</span>
+      </label>
+      <label>
+        Expiry
+        <input type="text" placeholder="MM/YY" />
+      </label>
+      <label>
+        CVC
+        <input type="text" placeholder="CVC" />
+      </label>
+      <label class="full">
+        Billing address
+        <input type="text" placeholder="Street, City, Country" />
+      </label>
+    </div>
+
+    <form method="post" action="/checkout">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+      <button class="btn primary full" type="submit">Upgrade to Pro</button>
+    </form>
+
+    <div class="trust-row">
+      <span>Cancel anytime</span>
+      <span>No data sold</span>
+      <span>Secure payments</span>
+    </div>
+
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const toggleButtons = document.querySelectorAll(".toggle-btn");
+  const proPrice = document.getElementById("proPrice");
+  toggleButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      toggleButtons.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      if (btn.dataset.plan === "yearly") {
+        proPrice.innerHTML = "$48<span>/year</span>";
+      } else {
+        proPrice.innerHTML = "$5<span>/month</span>";
+      }
+    });
+  });
+
+</script>
+{% endblock %}
