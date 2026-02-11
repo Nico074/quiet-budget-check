@@ -6,20 +6,60 @@
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
+  <div class="bg"></div>
+  <header class="container header">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">
+        <span class="brand-name">Quiet Budget</span>
+        <span class="brand-sub">Check</span>
+      </span>
+    </a>
+    <div class="header-actions">
+      <a href="/" class="btn-ghost">Home</a>
+      <a href="/profile" class="btn">Profile</a>
+      <a href="/logout" class="btn-ghost">Logout</a>
+    </div>
+  </header>
+
   <div class="dash-wrap">
     <div class="dash-top">
-      <h1>Dashboard</h1>
-      <a class="btn-ghost" href="/logout">Logout</a>
+      <div>
+        <h1>Dashboard</h1>
+        <p class="muted">Track your checks and keep momentum on your budget.</p>
+      </div>
+      <a class="btn" href="/">Run a check</a>
     </div>
 
     <div class="dash-stats">
-      <div class="stat">OK <span>{{ stats.ok }}</span></div>
-      <div class="stat">Caution <span>{{ stats.caution }}</span></div>
-      <div class="stat">Danger <span>{{ stats.danger }}</span></div>
+      <div class="stat stat-ok">
+        <div>
+          <div class="muted small">On track</div>
+          <div class="stat-title">OK</div>
+        </div>
+        <span>{{ stats.ok }}</span>
+      </div>
+      <div class="stat stat-caution">
+        <div>
+          <div class="muted small">Watch pace</div>
+          <div class="stat-title">Caution</div>
+        </div>
+        <span>{{ stats.caution }}</span>
+      </div>
+      <div class="stat stat-danger">
+        <div>
+          <div class="muted small">High risk</div>
+          <div class="stat-title">Danger</div>
+        </div>
+        <span>{{ stats.danger }}</span>
+      </div>
     </div>
 
     <div class="dash-card">
-      <h2>Recent checks</h2>
+      <div class="dash-card-head">
+        <h2>Recent checks</h2>
+        <span class="muted small">Last 15 checks</span>
+      </div>
       {% if not history %}
         <p class="muted">No history yet. Run a check from the home page.</p>
       {% else %}
@@ -31,23 +71,13 @@
             <div class="row">
               <div>{{ h.created_at.strftime("%Y-%m-%d %H:%M") }}</div>
               <div>${{ "%.2f"|format(h.daily_budget) }}</div>
-              <div class="pill {{ h.status }}">
-                {% if h.status == "danger" %}
-                  Attention
-                {% elif h.status == "caution" %}
-                  Caution
-                {% else %}
-                  OK
-                {% endif %}
-              </div>
+              <div class="status status-{{ h.status }}">{{ h.status }}</div>
               <div class="muted">{{ h.message }}</div>
             </div>
           {% endfor %}
         </div>
       {% endif %}
     </div>
-
-    <p class="muted"><a href="/">Back to home</a></p>
   </div>
 </body>
 </html>

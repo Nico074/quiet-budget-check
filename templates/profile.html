@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Profile • Quiet Budget Check</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="bg"></div>
+  <header class="container header">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">
+        <span class="brand-name">Quiet Budget</span>
+        <span class="brand-sub">Check</span>
+      </span>
+    </a>
+    <div class="header-actions">
+      <a href="/" class="btn-ghost">Home</a>
+      <a href="/dashboard" class="btn">Dashboard</a>
+      <a href="/logout" class="btn-ghost">Logout</a>
+    </div>
+  </header>
+
+  <main class="container profile-wrap">
+    <div class="profile-hero">
+      <div>
+        <h1>Profile settings</h1>
+        <p class="muted">Update your personal details. These help personalize future features.</p>
+      </div>
+    </div>
+
+    <div class="profile-layout">
+      <aside class="profile-nav">
+        <div class="profile-nav-title">Settings</div>
+        <a class="profile-tab active" href="/profile">Personal info</a>
+        <button class="profile-tab" type="button" disabled>Payment methods</button>
+        <button class="profile-tab" type="button" disabled>Cards</button>
+        <button class="profile-tab" type="button" disabled>Security</button>
+        <button class="profile-tab" type="button" disabled>Notifications</button>
+        <button class="profile-tab" type="button" disabled>Usage & billing</button>
+        <div class="profile-note">More sections soon.</div>
+      </aside>
+
+      <section class="profile-card">
+        <div class="profile-card-head">
+          <div>
+            <h2>Personal information</h2>
+            <p class="muted">Keep your account details accurate for a smoother experience.</p>
+          </div>
+          <span class="profile-pill">Verified account</span>
+        </div>
+
+        <form method="post" action="/profile" class="profile-form">
+          <div class="grid">
+            <div>
+              <label>First name</label>
+              <input name="first_name" value="{{ profile.first_name }}" placeholder="e.g. Alex" />
+            </div>
+            <div>
+              <label>Last name</label>
+              <input name="last_name" value="{{ profile.last_name }}" placeholder="e.g. Morgan" />
+            </div>
+            <div class="full">
+              <label>Address</label>
+              <input name="address" value="{{ profile.address }}" placeholder="Street, number" />
+            </div>
+            <div>
+              <label>City</label>
+              <input name="city" value="{{ profile.city }}" placeholder="City" />
+            </div>
+            <div>
+              <label>Country</label>
+              <input name="country" value="{{ profile.country }}" placeholder="Country" />
+            </div>
+            <div class="full">
+              <label>Phone</label>
+              <input name="phone" value="{{ profile.phone }}" placeholder="+1 555 000 0000" />
+            </div>
+          </div>
+          <div class="profile-actions">
+            <button type="submit" class="btn-primary">Save changes</button>
+            <button type="button" class="btn-ghost">Cancel</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

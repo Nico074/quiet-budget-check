@@ -5,8 +5,9 @@ from fastapi.templating import Jinja2Templates
 from sqlmodel import Session, select
 from passlib.context import CryptContext
 from itsdangerous import URLSafeSerializer, BadSignature
+from urllib.parse import urlencode
 
-from db import engine, init_db, User, CheckHistory
+from db import engine, init_db, User, CheckHistory, Profile
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -21,14 +22,14 @@ def analyser_depense(revenu: float, fixes: float, depense: float, jours: int):
     budget_jour = budget_rest / jours if jours > 0 else 0
 
     if budget_jour <= 0:
-        return budget_jour, "danger", "Your available budget is too low or the remaining days are invalid."
+        return budget_jour, "danger", "Funds are low — careful planning helps here."
 
     if depense <= budget_jour:
-        return budget_jour, "ok", "This expense fits your normal pace."
+        return budget_jour, "ok", "You’re on track."
     elif depense <= budget_jour * 1.3:
-        return budget_jour, "caution", "Careful — this tightens the rest of your month."
+        return budget_jour, "caution", "You still have funds — just stay mindful."
     else:
-        return budget_jour, "danger", "This puts serious pressure on your month."
+        return budget_jour, "danger", "Funds are low — careful planning helps here."
 
 
 def set_auth_cookie(resp: Response, user_id: int):
@@ -63,7 +64,15 @@ def on_startup():
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     user_id = get_user_id_from_request(request)
-    return templates.TemplateResponse("index.html", {"request": request, "result": None, "user_id": user_id})
+    status = request.query_params.get("status")
+    message = request.query_params.get("message")
+    daily = request.query_params.get("daily")
+
+    result = None
+    if status and message and daily:
+        result = {"status": status, "message": message, "daily_budget": daily}
+
+    return templates.TemplateResponse("index.html", {"request": request, "result": result, "user_id": user_id})
 
 
 @app.post("/check", response_class=HTMLResponse)
@@ -92,12 +101,14 @@ def check(
             ))
             session.commit()
 
-    result = {
-        "daily_budget": round(budget_jour, 2),
-        "status": etat,
-        "message": message,
-    }
-    return templates.TemplateResponse("index.html", {"request": request, "result": result, "user_id": user_id})
+    params = urlencode(
+        {
+            "daily": f"{budget_jour:.1f}",
+            "status": etat,
+            "message": message,
+        }
+    )
+    return RedirectResponse(url=f"/?{params}", status_code=303)
 
 
 @app.get("/register", response_class=HTMLResponse)
@@ -192,3 +203,51 @@ def dashboard(request: Request):
             "stats": {"ok": ok_count, "caution": caution_count, "danger": danger_count},
         },
     )
+
+
+@app.get("/profile", response_class=HTMLResponse)
+def profile_page(request: Request):
+    user_id = get_user_id_from_request(request)
+    if not user_id:
+        return RedirectResponse(url="/login", status_code=303)
+
+    with Session(engine) as session:
+        profile = session.exec(select(Profile).where(Profile.user_id == user_id)).first()
+        if not profile:
+            profile = Profile(user_id=user_id)
+            session.add(profile)
+            session.commit()
+            session.refresh(profile)
+
+    return templates.TemplateResponse("profile.html", {"request": request, "profile": profile})
+
+
+@app.post("/profile", response_class=HTMLResponse)
+def profile_update(
+    request: Request,
+    first_name: str = Form(""),
+    last_name: str = Form(""),
+    address: str = Form(""),
+    city: str = Form(""),
+    country: str = Form(""),
+    phone: str = Form(""),
+):
+    user_id = get_user_id_from_request(request)
+    if not user_id:
+        return RedirectResponse(url="/login", status_code=303)
+
+    with Session(engine) as session:
+        profile = session.exec(select(Profile).where(Profile.user_id == user_id)).first()
+        if not profile:
+            profile = Profile(user_id=user_id)
+            session.add(profile)
+
+        profile.first_name = first_name.strip()
+        profile.last_name = last_name.strip()
+        profile.address = address.strip()
+        profile.city = city.strip()
+        profile.country = country.strip()
+        profile.phone = phone.strip()
+        session.commit()
+
+    return RedirectResponse(url="/profile", status_code=303)
