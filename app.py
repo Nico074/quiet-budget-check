@@ -13,6 +13,7 @@ import os
 import logging
 
 from db import engine, init_db, User, CheckHistory, Profile, HealthScoreHistory
+from plans import PLANS
 
 try:
     import stripe
@@ -21,9 +22,13 @@ except Exception:
 
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
 STRIPE_PRICE_ID = os.getenv("STRIPE_PRICE_ID", "")
+STRIPE_PRICE_ID_MONTHLY = os.getenv("STRIPE_PRICE_ID_MONTHLY", "")
+STRIPE_PRICE_ID_YEARLY = os.getenv("STRIPE_PRICE_ID_YEARLY", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 APP_BASE_URL = os.getenv("APP_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
 STRIPE_PORTAL_RETURN_URL = os.getenv("STRIPE_PORTAL_RETURN_URL", f"{APP_BASE_URL}/billing")
+PRO_PAYWALL_ENABLED = os.getenv("PRO_PAYWALL_ENABLED", "false").lower() == "true"
+DEMO_MODE = os.getenv("DEMO_MODE", "false").lower() == "true"
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -47,6 +52,20 @@ def is_rate_limited(ip: str, limit: int = 5, window_seconds: int = 600):
     attempts = [t for t in attempts if now - t < window_seconds]
     login_attempts[ip] = attempts
     return len(attempts) >= limit
+
+
+def is_rate_limited_key(key: str, limit: int = 5, window_seconds: int = 600):
+    now = _now()
+    attempts = login_attempts.get(key, [])
+    attempts = [t for t in attempts if now - t < window_seconds]
+    login_attempts[key] = attempts
+    return len(attempts) >= limit
+
+
+def record_attempt(key: str):
+    attempts = login_attempts.get(key, [])
+    attempts.append(_now())
+    login_attempts[key] = attempts
 
 
 def record_login_failure(ip: str):
@@ -143,6 +162,7 @@ def render_template(template: str, context: dict):
     token = get_or_set_csrf_token(request) if request else None
     if token:
         context["csrf_token"] = token
+    context["paywall_enabled"] = PRO_PAYWALL_ENABLED
     resp = templates.TemplateResponse(template, context)
     if token:
         set_csrf_cookie(resp, token)
@@ -152,6 +172,7 @@ def render_template(template: str, context: dict):
 def get_plan_state_for_user(user_id: int | None):
     if not user_id:
         return "free"
+
     with Session(engine) as session:
         user = session.exec(select(User).where(User.id == user_id)).first()
         if user and user.plan:
@@ -161,6 +182,65 @@ def get_plan_state_for_user(user_id: int | None):
 
 def require_pro(user_id: int | None):
     return get_plan_state_for_user(user_id) == "pro"
+
+
+def pro_guard(request: Request, user_id: int, active_page: str):
+    if not PRO_PAYWALL_ENABLED:
+        return None
+    if require_pro(user_id):
+        return None
+    return templates.TemplateResponse(
+        "upgrade_required.html",
+        {"request": request, "active_page": active_page, "plan_state": get_plan_state_for_user(user_id)},
+    )
+
+
+def demo_history():
+    return [
+        CheckHistory(
+            user_id=0,
+            net_income=3200,
+            fixed_expenses=1900,
+            today_expense=85,
+            days_left=12,
+            daily_budget=108.3,
+            status="ok",
+            message="On track.",
+        ),
+        CheckHistory(
+            user_id=0,
+            net_income=3200,
+            fixed_expenses=1900,
+            today_expense=140,
+            days_left=10,
+            daily_budget=108.3,
+            status="caution",
+            message="Slightly above pace.",
+        ),
+        CheckHistory(
+            user_id=0,
+            net_income=3200,
+            fixed_expenses=1900,
+            today_expense=165,
+            days_left=9,
+            daily_budget=108.3,
+            status="danger",
+            message="Drift detected.",
+        ),
+    ]
+
+
+def get_recent_history(user_id: int, limit: int = 15):
+    with Session(engine) as session:
+        history = session.exec(
+            select(CheckHistory)
+            .where(CheckHistory.user_id == user_id)
+            .order_by(CheckHistory.created_at.desc())
+            .limit(limit)
+        ).all()
+    if DEMO_MODE and not history:
+        return demo_history()
+    return history
 
 
 def compute_health_score(history: list[CheckHistory]):
@@ -309,6 +389,62 @@ def companion_insights(health_meta: dict):
     return tips[:3]
 
 
+def top_drivers(breakdown: dict):
+    metrics = {
+        "Stability": breakdown.get("stability", 0),
+        "Drift control": breakdown.get("acceleration", 0),
+        "Cushion": breakdown.get("cushion", 0),
+        "Runway": breakdown.get("runway", 0),
+        "Fixed ratio": 100 - breakdown.get("affordability", 0),
+        "Consistency": breakdown.get("consistency", 0),
+        "Shock": breakdown.get("shock", 0),
+    }
+    ranked = sorted(metrics.items(), key=lambda x: x[1])
+    drivers = []
+    for name, score in ranked[:3]:
+        if name == "Fixed ratio":
+            drivers.append((name, f"{score}% of income fixed"))
+        else:
+            drivers.append((name, f"{score}%"))
+    return drivers
+
+
+def next_steps(breakdown: dict):
+    steps = []
+    if breakdown.get("cushion", 0) < 45:
+        steps.append("Add a small buffer transfer this week.")
+    if breakdown.get("acceleration", 0) < 50:
+        steps.append("Set a 48‑hour soft cap to reduce drift.")
+    if breakdown.get("consistency", 0) < 55:
+        steps.append("Pick a single weekly pace and stick to it.")
+    if breakdown.get("affordability", 0) < 45:
+        steps.append("Review fixed costs for a quick trim.")
+    if not steps:
+        steps.append("Keep your current pace — it’s working.")
+    return steps[:3]
+
+
+def normalize_tone(tone: str | None):
+    tone = (tone or "calm").strip().lower()
+    if tone not in {"calm", "direct", "playful", "coach"}:
+        tone = "calm"
+    return tone
+
+
+def companion_engine(tone: str, health_meta: dict):
+    tips = companion_insights(health_meta)
+    tone = normalize_tone(tone)
+    prefix = {
+        "calm": "Calm check‑in:",
+        "direct": "Direct read:",
+        "playful": "Quick vibe:",
+        "coach": "Coach mode:",
+    }[tone]
+    message = f"{prefix} {tips[0]}"
+    actions = ["Apply suggestion", "Create a plan", "Show risk drivers"]
+    return {"message": message, "tips": tips[1:], "actions": actions}
+
+
 def compute_streaks(history: list[CheckHistory]):
     stable = 0
     adjust = 0
@@ -382,12 +518,12 @@ def home(request: Request):
     if status and message and daily:
         result = {"status": status, "message": message, "daily_budget": daily}
 
-    return render_template("index.html", {"request": request, "result": result, "user_id": user_id})
+    return render_template("index.html", {"request": request, "result": result, "user_id": user_id, "plans": PLANS})
 
 
 @app.get("/pricing", response_class=HTMLResponse)
 def pricing_page(request: Request):
-    return render_template("pricing.html", {"request": request, "user_id": get_user_id_from_request(request)})
+    return render_template("pricing.html", {"request": request, "user_id": get_user_id_from_request(request), "plans": PLANS})
 
 
 @app.get("/privacy", response_class=HTMLResponse)
@@ -419,6 +555,11 @@ def check(
         return render_template(
             "index.html",
             {"request": request, "result": None, "user_id": get_user_id_from_request(request), "error": "Please check your inputs."},
+        )
+    if income > 1_000_000 or fixed > 1_000_000 or today > 1_000_000 or days_left > 365:
+        return render_template(
+            "index.html",
+            {"request": request, "result": None, "user_id": get_user_id_from_request(request), "error": "Inputs look out of range."},
         )
     budget_jour, etat, message = analyser_depense(income, fixed, today, days_left)
 
@@ -478,17 +619,26 @@ def register(
 ):
     if not validate_csrf(request, csrf_token):
         return render_template("register.html", {"request": request, "error": "Session expired. Please try again."})
+    ip = request.client.host if request.client else "unknown"
+    if is_rate_limited_key(f"register:{ip}", limit=6, window_seconds=600):
+        return render_template("register.html", {"request": request, "error": "Too many attempts. Try again later."})
     email = email.strip().lower()
-    if len(password) > 72:
+    if len(password) > 72 or len(password) < 8:
         return templates.TemplateResponse(
             "register.html",
-            {"request": request, "error": "Password is too long (max 72 characters)."},
+            {"request": request, "error": "Password must be 8–72 characters."},
+        )
+    if len(email) > 120:
+        return templates.TemplateResponse(
+            "register.html",
+            {"request": request, "error": "Email is too long."},
         )
     pw_hash = pwd_context.hash(password)
 
     with Session(engine) as session:
         existing = session.exec(select(User).where(User.email == email)).first()
         if existing:
+            record_attempt(f"register:{ip}")
             return templates.TemplateResponse("register.html", {"request": request, "error": "Email already used."})
 
         user = User(email=email, password_hash=pw_hash)
@@ -498,6 +648,7 @@ def register(
 
     resp = RedirectResponse(url="/dashboard", status_code=303)
     set_auth_cookie(resp, user.id)
+    record_attempt(f"register:{ip}")
     return resp
 
 
@@ -551,20 +702,21 @@ def dashboard(request: Request):
     if not user_id:
         return RedirectResponse(url="/login", status_code=303)
 
-    with Session(engine) as session:
-        history = session.exec(
-            select(CheckHistory)
-            .where(CheckHistory.user_id == user_id)
-            .order_by(CheckHistory.created_at.desc())
-            .limit(15)
-        ).all()
-        profile = session.exec(select(Profile).where(Profile.user_id == user_id)).first()
-        last_score = session.exec(
-            select(HealthScoreHistory)
-            .where(HealthScoreHistory.user_id == user_id)
-            .order_by(HealthScoreHistory.created_at.desc())
-            .limit(1)
-        ).first()
+    try:
+        history = get_recent_history(user_id, limit=5)
+        with Session(engine) as session:
+            profile = session.exec(select(Profile).where(Profile.user_id == user_id)).first()
+            last_score = session.exec(
+                select(HealthScoreHistory)
+                .where(HealthScoreHistory.user_id == user_id)
+                .order_by(HealthScoreHistory.created_at.desc())
+                .limit(1)
+            ).first()
+    except Exception:
+        logging.exception("Dashboard load failed")
+        history = []
+        profile = None
+        last_score = None
 
     ok_count = sum(1 for h in history if h.status == "ok")
     caution_count = sum(1 for h in history if h.status == "caution")
@@ -582,7 +734,10 @@ def dashboard(request: Request):
     health_score, health_meta = compute_health_score(history)
     health_label_text = health_label(health_score)
     health_reason_text = last_score.reason if last_score else health_reason(history, health_meta["breakdown"])
-    tips = companion_insights(health_meta)
+    drivers = top_drivers(health_meta["breakdown"])
+    steps = next_steps(health_meta["breakdown"])
+    tone = normalize_tone(profile.companion_tone if profile else "calm")
+    companion = companion_engine(tone, health_meta)
     health_score_display = last_score.score if last_score else health_score
     streaks = compute_streaks(history)
     projection = compute_projection(history)
@@ -603,7 +758,10 @@ def dashboard(request: Request):
             "health_risk": health_meta["risk"],
             "health_label": health_label_text,
             "health_reason": health_reason_text,
-            "companion_tips": tips,
+            "health_drivers": drivers,
+            "health_steps": steps,
+            "companion": companion,
+            "companion_tone": tone,
             "streaks": streaks,
             "projection": projection,
         },
@@ -669,13 +827,36 @@ def profile_update(
     return RedirectResponse(url="/account", status_code=303)
 
 
+@app.post("/preferences", response_class=HTMLResponse)
+def preferences_update(
+    request: Request,
+    csrf_token: str = Form(""),
+    companion_tone: str = Form("calm"),
+):
+    user_id = get_user_id_from_request(request)
+    if not user_id:
+        return RedirectResponse(url="/login", status_code=303)
+    if not validate_csrf(request, csrf_token):
+        return RedirectResponse(url="/account#preferences", status_code=303)
+    tone = normalize_tone(companion_tone)
+    with Session(engine) as session:
+        profile = session.exec(select(Profile).where(Profile.user_id == user_id)).first()
+        if not profile:
+            profile = Profile(user_id=user_id)
+            session.add(profile)
+        profile.companion_tone = tone
+        session.commit()
+    return RedirectResponse(url=f"/account#preferences", status_code=303)
+
+
 @app.get("/run-check", response_class=HTMLResponse)
 def run_check_page(request: Request):
     user_id = get_user_id_from_request(request)
     if not user_id:
         return RedirectResponse(url="/login", status_code=303)
-    if not require_pro(user_id):
-        return RedirectResponse(url="/upgrade", status_code=303)
+    gate = pro_guard(request, user_id, "run-check")
+    if gate:
+        return gate
     plan_state = get_plan_state_for_user(user_id)
     return templates.TemplateResponse(
         "run_check.html",
@@ -689,13 +870,7 @@ def history_page(request: Request):
     if not user_id:
         return RedirectResponse(url="/login", status_code=303)
 
-    with Session(engine) as session:
-        history = session.exec(
-            select(CheckHistory)
-            .where(CheckHistory.user_id == user_id)
-            .order_by(CheckHistory.created_at.desc())
-            .limit(50)
-        ).all()
+    history = get_recent_history(user_id, limit=50)
 
     plan_state = get_plan_state_for_user(user_id)
     return templates.TemplateResponse(
@@ -709,8 +884,9 @@ def goals_page(request: Request):
     user_id = get_user_id_from_request(request)
     if not user_id:
         return RedirectResponse(url="/login", status_code=303)
-    if not require_pro(user_id):
-        return RedirectResponse(url="/upgrade", status_code=303)
+    gate = pro_guard(request, user_id, "goals")
+    if gate:
+        return gate
     plan_state = get_plan_state_for_user(user_id)
     return templates.TemplateResponse(
         "goals.html",
@@ -723,8 +899,9 @@ def wallet_page(request: Request):
     user_id = get_user_id_from_request(request)
     if not user_id:
         return RedirectResponse(url="/login", status_code=303)
-    if not require_pro(user_id):
-        return RedirectResponse(url="/upgrade", status_code=303)
+    gate = pro_guard(request, user_id, "wallet")
+    if gate:
+        return gate
     plan_state = get_plan_state_for_user(user_id)
     return templates.TemplateResponse(
         "wallet.html",
@@ -786,19 +963,31 @@ def upgrade_page(request: Request):
             "active_page": "upgrade",
             "plan_state": plan_state,
             "email": email,
+            "plans": PLANS,
         },
     )
 
 
 @app.post("/checkout", response_class=HTMLResponse)
-def checkout(request: Request, csrf_token: str = Form("")):
+def checkout(request: Request, csrf_token: str = Form(""), plan_interval: str = Form("monthly")):
     user_id = get_user_id_from_request(request)
     if not user_id:
         return RedirectResponse(url="/login", status_code=303)
+    ip = request.client.host if request.client else "unknown"
+    if is_rate_limited_key(f"checkout:{ip}", limit=6, window_seconds=600):
+        return render_template("upgrade.html", {"request": request, "active_page": "upgrade", "plan_state": "free", "error": "Too many attempts. Try again later."})
     if not validate_csrf(request, csrf_token):
         return render_template("upgrade.html", {"request": request, "active_page": "upgrade", "plan_state": "free", "error": "Session expired. Please try again."})
-    if not stripe or not STRIPE_SECRET_KEY or not STRIPE_PRICE_ID:
+    if not stripe or not STRIPE_SECRET_KEY or not (STRIPE_PRICE_ID or STRIPE_PRICE_ID_MONTHLY or STRIPE_PRICE_ID_YEARLY):
         return render_template("upgrade.html", {"request": request, "active_page": "upgrade", "plan_state": "free", "error": "Stripe is not configured."})
+    interval = plan_interval if plan_interval in ("monthly", "yearly") else "monthly"
+    price_id = STRIPE_PRICE_ID
+    if interval == "monthly" and STRIPE_PRICE_ID_MONTHLY:
+        price_id = STRIPE_PRICE_ID_MONTHLY
+    if interval == "yearly" and STRIPE_PRICE_ID_YEARLY:
+        price_id = STRIPE_PRICE_ID_YEARLY
+    if not price_id:
+        return render_template("upgrade.html", {"request": request, "active_page": "upgrade", "plan_state": "free", "error": "Stripe price ID missing."})
 
     stripe.api_key = STRIPE_SECRET_KEY
     with Session(engine) as session:
@@ -815,7 +1004,7 @@ def checkout(request: Request, csrf_token: str = Form("")):
 
     checkout_session = stripe.checkout.Session.create(
         customer=customer_id,
-        line_items=[{"price": STRIPE_PRICE_ID, "quantity": 1}],
+        line_items=[{"price": price_id, "quantity": 1}],
         mode="subscription",
         success_url=f"{APP_BASE_URL}/billing?success=1",
         cancel_url=f"{APP_BASE_URL}/upgrade?canceled=1",

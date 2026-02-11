@@ -55,14 +55,22 @@
     </div>
 
     <div class="tab-panel" data-panel="preferences">
-      <div class="empty-state compact">
-        <div class="empty-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" role="img"><path d="M12 3l2 3 4 .5-3 2.5.9 4-3.9-2-3.9 2 .9-4-3-2.5 4-.5z" /></svg>
-        </div>
-        <div class="empty-title">Preferences coming soon</div>
-        <div class="muted">We’re building gentle reminders and default views.</div>
-        <button class="btn primary">Join waitlist</button>
-        <div class="empty-hint">You’ll be notified when it’s ready.</div>
+      <div class="card">
+        <h2>Companion tone</h2>
+        <p class="muted">Pick how the Companion speaks to you.</p>
+        <form method="post" action="/preferences" class="profile-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+          <label>Personality preset</label>
+          <select name="companion_tone" class="select-dark">
+            <option value="calm" {% if profile.companion_tone == "calm" %}selected{% endif %}>Calm</option>
+            <option value="direct" {% if profile.companion_tone == "direct" %}selected{% endif %}>Direct</option>
+            <option value="playful" {% if profile.companion_tone == "playful" %}selected{% endif %}>Playful</option>
+            <option value="coach" {% if profile.companion_tone == "coach" %}selected{% endif %}>Coach</option>
+          </select>
+          <div class="profile-actions">
+            <button class="btn-primary" type="submit">Save tone</button>
+          </div>
+        </form>
       </div>
       <div class="card-grid">
         <div class="card">

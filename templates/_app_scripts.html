@@ -15,8 +15,24 @@
       document.body.classList.toggle("nav-open");
     });
   }
+  const appBack = document.getElementById("appBack");
+  if (appBack) {
+    if (window.history.length > 1) {
+      appBack.style.display = "inline-flex";
+      appBack.addEventListener("click", () => window.history.back());
+    }
+  }
+  const assistantToggle = document.querySelector(".assistant-toggle");
+  const assistantBubble = document.querySelector(".assistant-bubble");
+  if (assistantToggle && assistantBubble) {
+    assistantToggle.addEventListener("click", () => {
+      assistantBubble.classList.toggle("open");
+    });
+  }
 </script>
+<script src="/static/ui.js" defer></script>
 <script src="/static/engines/healthScoreEngine.js" defer></script>
 <script src="/static/engines/momentumEngine.js" defer></script>
 <script src="/static/engines/projectionEngine.js" defer></script>
 <script src="/static/engines/streakEngine.js" defer></script>
+<script src="/static/command.js" defer></script>

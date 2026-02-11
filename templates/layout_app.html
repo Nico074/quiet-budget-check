@@ -11,26 +11,51 @@
     {% include "_sidebar.html" %}
     <main class="main-content">
       <div class="main-inner">
-      <div class="app-topbar">
-        <div>
-          <button class="icon-btn" type="button" id="navToggle" aria-label="Toggle navigation">
-            <svg viewBox="0 0 24 24" role="img"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
-          </button>
-          <div class="app-title">{% block page_title %}{% endblock %}</div>
-          <div class="muted">{% block page_subtitle %}{% endblock %}</div>
-        </div>
+        <div class="app-topbar">
+          <div>
+            <button class="icon-btn" type="button" id="navToggle" aria-label="Toggle navigation">
+              <svg viewBox="0 0 24 24" role="img"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+            </button>
+            <button class="btn ghost app-back" type="button" id="appBack">Back</button>
+            <div class="app-title">{% block page_title %}{% endblock %}</div>
+            <div class="muted">{% block page_subtitle %}{% endblock %}</div>
+          </div>
           <div class="app-actions">
             <div class="app-search" aria-hidden="true">
               <span>⌘</span>
               <input type="text" placeholder="Search or command" />
             </div>
+            <button class="btn ghost command-trigger" type="button" aria-label="Command palette">⌘K</button>
+            <button class="icon-chip" type="button" aria-label="Notifications">
+              <span class="dot" aria-hidden="true"></span>
+              <svg viewBox="0 0 24 24" role="img"><path d="M6 9a6 6 0 1 1 12 0v5l2 2H4l2-2z" /><path d="M9.5 19a2.5 2.5 0 0 0 5 0" /></svg>
+            </button>
+            <a class="btn ghost" href="/dashboard">Back to Dashboard</a>
+            <a class="btn ghost" href="/logout">Logout</a>
             {% block page_actions %}{% endblock %}
-            <div class="app-profile" aria-hidden="true"></div>
+            <a class="btn primary" href="/run-check">Run Check</a>
+            <a class="profile-chip" href="/account" aria-label="Account">
+              <span class="chip-dot" aria-hidden="true"></span>
+              <span>Account</span>
+            </a>
           </div>
         </div>
         {% block content %}{% endblock %}
       </div>
     </main>
+  </div>
+  <div class="command-overlay" id="commandOverlay" aria-hidden="true">
+    <div class="command-panel" role="dialog" aria-modal="true" aria-labelledby="commandTitle">
+      <div class="command-head">
+        <div>
+          <div class="command-title" id="commandTitle">Command palette</div>
+          <div class="muted small">Type to navigate or run actions</div>
+        </div>
+        <div class="command-hint">Esc</div>
+      </div>
+      <input class="command-input" id="commandInput" type="text" placeholder="Search pages or actions…" />
+      <div class="command-list" id="commandList" role="listbox"></div>
+    </div>
   </div>
   {% include "_assistant.html" %}
   {% include "_app_scripts.html" %}

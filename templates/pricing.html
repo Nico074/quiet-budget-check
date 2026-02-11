@@ -33,22 +33,21 @@
       </div>
       <div class="plan-grid">
         <div class="plan-card">
-          <div class="plan-title">Free</div>
+          <div class="plan-title">{{ plans.free.name }}</div>
           <div class="plan-price">$0</div>
           <ul class="plan-list">
-            <li>Quick check</li>
-            <li>Basic Health Score</li>
-            <li>Simple momentum indicator</li>
+            {% for f in plans.free.features %}
+            <li>{{ f }}</li>
+            {% endfor %}
           </ul>
         </div>
         <div class="plan-card featured">
-          <div class="plan-title">Pro</div>
-          <div class="plan-price">$5<span>/month</span></div>
+          <div class="plan-title">{{ plans.pro.name }}</div>
+          <div class="plan-price">${{ plans.pro.price_monthly }}<span>/month</span></div>
           <ul class="plan-list">
-            <li>Full Momentum analytics</li>
-            <li>Behavioral streaks + projections</li>
-            <li>AI Companion guidance</li>
-            <li>Scenario comparison</li>
+            {% for f in plans.pro.features %}
+            <li>{{ f }}</li>
+            {% endfor %}
           </ul>
         </div>
       </div>

@@ -44,6 +44,7 @@ class Profile(SQLModel, table=True):
     city: Optional[str] = Field(default="")
     country: Optional[str] = Field(default="")
     phone: Optional[str] = Field(default="")
+    companion_tone: Optional[str] = Field(default="calm")
 
 
 class HealthScoreHistory(SQLModel, table=True):
@@ -74,4 +75,11 @@ def _ensure_columns():
         for col, ddl in needed.items():
             if col not in cols:
                 cur.execute(f"ALTER TABLE user ADD COLUMN {col} {ddl}")
+        conn.commit()
+    with sqlite3.connect("app.db") as conn:
+        cur = conn.cursor()
+        cur.execute("PRAGMA table_info(profile)")
+        cols = {row[1] for row in cur.fetchall()}
+        if "companion_tone" not in cols:
+            cur.execute("ALTER TABLE profile ADD COLUMN companion_tone TEXT DEFAULT 'calm'")
         conn.commit()

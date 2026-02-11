@@ -16,7 +16,7 @@
         </span>
         <span>Dashboard</span>
       </a>
-      <a class="nav-item {% if active_page == 'run-check' %}active{% endif %} {% if plan_state != 'pro' %}locked{% endif %}" href="/run-check">
+      <a class="nav-item {% if active_page == 'run-check' %}active{% endif %} {% if paywall_enabled and plan_state != 'pro' %}locked{% endif %}" href="/run-check">
         <span class="nav-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" role="img"><path d="M12 3v18M3 12h18" /></svg>
         </span>
@@ -32,14 +32,14 @@
 
     <div class="nav-group">
       <div class="nav-title">Growth</div>
-      <a class="nav-item {% if active_page == 'goals' %}active{% endif %} {% if plan_state != 'pro' %}locked{% endif %}" href="/goals">
+      <a class="nav-item {% if active_page == 'goals' %}active{% endif %} {% if paywall_enabled and plan_state != 'pro' %}locked{% endif %}" href="/goals">
         <span class="nav-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" role="img"><path d="M4 16l6-6 4 4 6-8" /><path d="M20 6v6h-6" /></svg>
         </span>
         <span>Goals</span>
         <span class="nav-pill">Pro</span>
       </a>
-      <a class="nav-item {% if active_page == 'wallet' %}active{% endif %} {% if plan_state != 'pro' %}locked{% endif %}" href="/wallet">
+      <a class="nav-item {% if active_page == 'wallet' %}active{% endif %} {% if paywall_enabled and plan_state != 'pro' %}locked{% endif %}" href="/wallet">
         <span class="nav-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" role="img"><path d="M3 7h18v10H3z" /><path d="M7 7v10" /></svg>
         </span>
@@ -71,12 +71,4 @@
     </div>
   </nav>
 
-  <div class="sidebar-footer">
-    <a class="nav-item" href="/logout">
-      <span class="nav-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" role="img"><path d="M9 6h-5v12h5" /><path d="M16 17l4-5-4-5" /><path d="M20 12H9" /></svg>
-      </span>
-      <span>Logout</span>
-    </a>
-  </div>
 </aside>

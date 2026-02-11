@@ -31,22 +31,21 @@
 
     <div class="plan-grid">
       <div class="plan-card">
-        <div class="plan-title">Free</div>
+        <div class="plan-title">{{ plans.free.name }}</div>
         <div class="plan-price">$0</div>
         <ul class="plan-list">
-          <li>Quick checks</li>
-          <li>OK / Watch / Risk</li>
-          <li>Simple inputs</li>
+          {% for f in plans.free.features %}
+          <li>{{ f }}</li>
+          {% endfor %}
         </ul>
       </div>
       <div class="plan-card featured">
-        <div class="plan-title">Pro</div>
-        <div class="plan-price" id="proPrice">$5<span>/month</span></div>
+        <div class="plan-title">{{ plans.pro.name }}</div>
+        <div class="plan-price" id="proPrice">${{ plans.pro.price_monthly }}<span>/month</span></div>
         <ul class="plan-list">
-          <li>Advanced inputs</li>
-          <li>Goal tracking</li>
-          <li>History insights</li>
-          <li>Templates & comparisons</li>
+          {% for f in plans.pro.features %}
+          <li>{{ f }}</li>
+          {% endfor %}
         </ul>
       </div>
     </div>
@@ -65,7 +64,7 @@
   <section class="card checkout">
     <div class="checkout-head">
       <h2>Checkout</h2>
-      <div class="muted small">Mock checkout — Stripe integration comes next.</div>
+      <div class="muted small">Secure Stripe Checkout (test mode).</div>
     </div>
 
     {% if error %}
@@ -75,31 +74,16 @@
     <div class="form-grid">
       <label class="full">
         Email
-        <input type="email" value="{{ email or '' }}" placeholder="you@email.com" />
+        <input type="email" value="{{ email or '' }}" placeholder="you@email.com" readonly />
         <span class="help">Used for receipts and account access.</span>
       </label>
-      <label class="full">
-        Card details
-        <input type="text" placeholder="Card number" />
-        <span class="help">Secure payments placeholder.</span>
-      </label>
-      <label>
-        Expiry
-        <input type="text" placeholder="MM/YY" />
-      </label>
-      <label>
-        CVC
-        <input type="text" placeholder="CVC" />
-      </label>
-      <label class="full">
-        Billing address
-        <input type="text" placeholder="Street, City, Country" />
-      </label>
+      <div class="full muted small">Card details are collected securely by Stripe after you continue.</div>
     </div>
 
     <form method="post" action="/checkout">
       <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
-      <button class="btn primary full" type="submit">Upgrade to Pro</button>
+      <input type="hidden" name="plan_interval" id="planInterval" value="monthly" />
+      <button class="btn primary full" id="checkoutBtn" type="submit">Continue to Stripe</button>
     </form>
 
     <div class="trust-row">
@@ -116,17 +100,28 @@
 <script>
   const toggleButtons = document.querySelectorAll(".toggle-btn");
   const proPrice = document.getElementById("proPrice");
+  const planInterval = document.getElementById("planInterval");
+  const checkoutBtn = document.getElementById("checkoutBtn");
   toggleButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       toggleButtons.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       if (btn.dataset.plan === "yearly") {
-        proPrice.innerHTML = "$48<span>/year</span>";
+        proPrice.innerHTML = "$" + {{ plans.pro.price_yearly }} + "<span>/year</span>";
+        if (planInterval) planInterval.value = "yearly";
       } else {
-        proPrice.innerHTML = "$5<span>/month</span>";
+        proPrice.innerHTML = "$" + {{ plans.pro.price_monthly }} + "<span>/month</span>";
+        if (planInterval) planInterval.value = "monthly";
       }
     });
   });
+  const checkoutForm = document.querySelector("form[action='/checkout']");
+  if (checkoutForm && checkoutBtn) {
+    checkoutForm.addEventListener("submit", () => {
+      checkoutBtn.disabled = true;
+      checkoutBtn.textContent = "Redirecting…";
+    });
+  }
 
 </script>
 {% endblock %}

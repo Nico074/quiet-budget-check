@@ -2,7 +2,7 @@
 {% block title %}Dashboard • Momentum Labs{% endblock %}
 {% block page_title %}Hey {{ first_name }} 👋{% endblock %}
 {% block page_subtitle %}Here’s your budget pulse and recent activity.{% endblock %}
-{% block page_actions %}<a class="btn primary" href="/run-check">Run a check</a>{% endblock %}
+{% block page_actions %}{% endblock %}
 {% block content %}
 <section class="bento-grid hero-bento">
   <div class="card bento-card wide health-card">
@@ -14,7 +14,13 @@
         {% if health_trend >= 0 %}▲{% else %}▼{% endif %} {{ "+" if health_trend > 0 else "" }}{{ health_trend }}
       </span>
     </div>
-    <div class="score-label">{{ health_label }}</div>
+  <div class="score-label">{{ health_label }}</div>
+    <div class="driver-list">
+      <div class="muted small">Top drivers</div>
+      {% for d in health_drivers %}
+        <div class="driver-row"><span>{{ d[0] }}</span><strong>{{ d[1] }}</strong></div>
+      {% endfor %}
+    </div>
     <div class="score-meta">
       <span class="muted small">Stability {{ health_breakdown.stability }}%</span>
       <span class="muted small">Drift {{ health_breakdown.acceleration }}%</span>
@@ -26,6 +32,14 @@
       <span class="muted small">Shock {{ health_breakdown.shock }}%</span>
     </div>
     <div class="muted small">Risk: {{ health_risk|title }} · {{ health_reason }}</div>
+    <div class="next-steps">
+      <div class="muted small">What to do next</div>
+      <ul>
+        {% for s in health_steps %}
+          <li>{{ s }}</li>
+        {% endfor %}
+      </ul>
+    </div>
   </div>
   <div class="card bento-card">
     <div class="bento-title">Momentum streaks</div>
@@ -35,6 +49,7 @@
       <div class="streak-row"><span>Goal contributions</span><strong>{{ streaks.goal }} days</strong></div>
     </div>
     <div class="streak-glow" data-streak="{{ streaks.stable }}"></div>
+    <div class="muted small">Keep it alive: one steady check today.</div>
   </div>
   <div class="card bento-card">
     <div class="bento-title">Momentum Engine</div>
@@ -57,11 +72,16 @@
         <span style="--p:{{ p }}%"></span>
       {% endfor %}
     </div>
-    <div class="projection-meta">
-      <span>Safety buffer</span>
-      <span class="muted">{{ projection.buffer|title }}</span>
+  <div class="projection-meta">
+    <span>Safety buffer</span>
+    <span class="muted">{{ projection.buffer|title }}</span>
+  </div>
+    <div class="projection-labels">
+      <span class="muted small">Tight</span>
+      <span class="muted small">Comfortable</span>
     </div>
-    <div class="projection-controls">
+    <div class="muted small">Projection is a behavioral estimate, not a promise.</div>
+  <div class="projection-controls">
       <label>Income change
         <input type="range" id="projIncome" min="-20" max="20" value="0" />
       </label>
@@ -70,26 +90,23 @@
       </label>
     </div>
   </div>
-  <div class="card bento-card full coach-card">
+  <details class="card bento-card full collapsible">
+    <summary>Companion insights</summary>
+    <div class="coach-card">
     <div class="bento-title">Financial Companion</div>
     <div class="bento-sub">Supportive insight based on your recent rhythm.</div>
-    <div class="coach-message">
-      {% if companion_tips %}
-        {{ companion_tips[0] }}
-      {% else %}
-        Your rhythm looks steady. Keep the same pace this week.
-      {% endif %}
-    </div>
-    {% if companion_tips|length > 1 %}
+    <div class="coach-message">{{ companion.message }}</div>
+    {% if companion.tips|length > 0 %}
     <ul class="coach-list">
-      {% for t in companion_tips[1:] %}
+      {% for t in companion.tips %}
       <li>{{ t }}</li>
       {% endfor %}
     </ul>
     {% endif %}
     <div class="coach-actions">
-      <button class="ghost">See pattern</button>
-      <button class="btn primary">Apply suggestion</button>
+      {% for action in companion.actions %}
+        <button class="{% if loop.first %}btn primary{% else %}ghost{% endif %}">{{ action }}</button>
+      {% endfor %}
     </div>
     <div class="coach-input">
       <input type="text" placeholder="Ask the companion (mock)..." />
@@ -99,13 +116,14 @@
         <button class="ghost">Create a plan</button>
       </div>
     </div>
-  </div>
+    </div>
+  </details>
 </section>
 
 <div class="dash-card">
   <div class="dash-card-head">
     <h2>Recent checks</h2>
-    <span class="muted small">Last 15 checks</span>
+    <span class="muted small">Last 5 checks</span>
   </div>
   {% if not history %}
     <div class="empty-state">
@@ -135,7 +153,9 @@
   {% endif %}
 </div>
 
-<section class="bento-grid insights-grid">
+<details class="card collapsible">
+  <summary>More insights</summary>
+  <section class="bento-grid insights-grid">
   <div class="card bento-card wide insights-tile">
     <div class="bento-title">Top Savings Rates</div>
     <div class="bento-sub">High-yield picks with steady access.</div>
@@ -184,24 +204,7 @@
     </div>
     <div class="alloc-bar mint"><span style="width:20%"></span></div>
   </div>
-</section>
+  </section>
+</details>
 
-<section class="card momentum-card">
-  <div class="momentum-head">
-    <div>
-      <div class="bento-title">Momentum Mode</div>
-      <div class="bento-sub">A calm signal of how close you are to overspending.</div>
-    </div>
-    <div class="momentum-state ok">Steady</div>
-  </div>
-  <div class="momentum-track">
-    <div class="momentum-aura" data-status="{{ pace_status }}"></div>
-    <div class="momentum-line"></div>
-  </div>
-  <div class="momentum-meta">
-    <span>Low drift</span>
-    <span class="muted">Based on last 7 checks</span>
-    <span>High drift</span>
-  </div>
-</section>
 {% endblock %}
