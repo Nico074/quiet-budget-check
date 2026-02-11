@@ -1,0 +1,20 @@
+<div class="plan-grid">
+  <div class="plan-card">
+    <div class="plan-title">{{ plans.free.name }}</div>
+    <div class="plan-price">$0</div>
+    <ul class="plan-list">
+      {% for f in plans.free.features %}
+      <li>{{ f }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="plan-card featured">
+    <div class="plan-title">{{ plans.pro.name }}</div>
+    <div class="plan-price">${{ plans.pro.price_monthly }}<span>/month</span></div>
+    <ul class="plan-list">
+      {% for f in plans.pro.features %}
+      <li>{{ f }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>

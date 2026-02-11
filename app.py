@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, Form, Response
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session, select
@@ -14,6 +14,7 @@ import logging
 
 from db import engine, init_db, User, CheckHistory, Profile, HealthScoreHistory
 from plans import PLANS
+from companion_service import CompanionContext, respond
 
 try:
     import stripe
@@ -766,6 +767,33 @@ def dashboard(request: Request):
             "projection": projection,
         },
     )
+
+
+@app.post("/companion")
+def companion_reply(request: Request, message: str = Form("")):
+    user_id = get_user_id_from_request(request)
+    if not user_id:
+        return JSONResponse({"reply": "Please sign in to access your Companion."}, status_code=401)
+    history = get_recent_history(user_id, limit=20)
+    health_score, health_meta = compute_health_score(history)
+    drivers = top_drivers(health_meta["breakdown"])
+    streaks = compute_streaks(history)
+    with Session(engine) as session:
+        profile = session.exec(select(Profile).where(Profile.user_id == user_id)).first()
+    name = profile.first_name.strip() if profile and profile.first_name else "there"
+    tone = normalize_tone(profile.companion_tone if profile else "calm")
+    ctx = CompanionContext(
+        name=name,
+        tone=tone,
+        score=health_score,
+        risk=health_meta["risk"],
+        streak_stable=streaks["stable"],
+        streak_adjust=streaks["adjust"],
+        streak_goal=streaks["goal"],
+        drivers=drivers,
+    )
+    reply = respond(message, ctx)
+    return JSONResponse({"reply": reply})
 
 @app.get("/check", response_class=HTMLResponse)
 def check_page(request: Request):

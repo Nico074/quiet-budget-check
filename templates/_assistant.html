@@ -4,14 +4,18 @@
   </button>
   <div class="assistant-panel" role="dialog" aria-modal="false">
     <div class="assistant-head">Financial Companion</div>
-    <div class="assistant-body">
-      Ask about your score, drift, or run a quick scenario. This is a lightweight demo.
+    <div class="assistant-body" id="assistantThread">
+      <div class="assistant-msg">Ask about your score, drift, or run a quick scenario.</div>
     </div>
     <div class="assistant-actions">
-      <button class="ghost">Explain score</button>
-      <button class="ghost">Suggest scenario</button>
-      <button class="ghost">Show risk drivers</button>
-      <button class="ghost">Create a plan</button>
+      <button class="ghost assistant-action" data-msg="Explain score">Explain score</button>
+      <button class="ghost assistant-action" data-msg="Suggest scenario">Suggest scenario</button>
+      <button class="ghost assistant-action" data-msg="Show risk drivers">Show risk drivers</button>
+      <button class="ghost assistant-action" data-msg="Create a plan">Create a plan</button>
+    </div>
+    <div class="assistant-input">
+      <input type="text" id="assistantInput" placeholder="Ask the Companion…" />
+      <button class="btn primary" id="assistantSend">Send</button>
     </div>
   </div>
 </div>

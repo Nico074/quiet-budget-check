@@ -1,29 +1,7 @@
 {% extends "layout_public.html" %}
 {% block title %}Privacy • Momentum Labs{% endblock %}
 {% block body %}
-  <header class="container header sticky">
-    <a class="brand" href="/">
-      <span class="brand-mark" aria-hidden="true"></span>
-      <span class="brand-text">
-        <span class="brand-name">Momentum Labs</span>
-        <span class="brand-sub">Behavioral Intelligence</span>
-      </span>
-    </a>
-    <nav class="header-nav">
-      <a href="/pricing">Pricing</a>
-      <a href="/privacy" class="active">Privacy</a>
-      <a href="/terms">Terms</a>
-    </nav>
-    <div class="header-actions">
-      {% if user_id %}
-      <a href="/dashboard" class="btn">Dashboard</a>
-      <a href="/logout" class="btn-ghost">Logout</a>
-      {% else %}
-      <a href="/login" class="btn">Log in</a>
-      <a href="/register" class="btn-ghost">Register</a>
-      {% endif %}
-    </div>
-  </header>
+  {% include "_public_header.html" %}
 
   <main class="container">
     <section class="section-block">

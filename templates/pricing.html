@@ -1,29 +1,7 @@
 {% extends "layout_public.html" %}
 {% block title %}Pricing • Momentum Labs{% endblock %}
 {% block body %}
-  <header class="container header sticky">
-    <a class="brand" href="/">
-      <span class="brand-mark" aria-hidden="true"></span>
-      <span class="brand-text">
-        <span class="brand-name">Momentum Labs</span>
-        <span class="brand-sub">Behavioral Intelligence</span>
-      </span>
-    </a>
-    <nav class="header-nav">
-      <a href="/pricing">Pricing</a>
-      <a href="/privacy">Privacy</a>
-      <a href="/terms">Terms</a>
-    </nav>
-    <div class="header-actions">
-      {% if user_id %}
-      <a href="/dashboard" class="btn">Dashboard</a>
-      <a href="/logout" class="btn-ghost">Logout</a>
-      {% else %}
-      <a href="/login" class="btn">Log in</a>
-      <a href="/register" class="btn-ghost">Register</a>
-      {% endif %}
-    </div>
-  </header>
+  {% include "_public_header.html" %}
 
   <main class="container">
     <section class="section-block">
@@ -31,26 +9,7 @@
         <h2>Simple plans. Behavioral clarity.</h2>
         <p class="muted">Free for quick checks. Pro for momentum control.</p>
       </div>
-      <div class="plan-grid">
-        <div class="plan-card">
-          <div class="plan-title">{{ plans.free.name }}</div>
-          <div class="plan-price">$0</div>
-          <ul class="plan-list">
-            {% for f in plans.free.features %}
-            <li>{{ f }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-        <div class="plan-card featured">
-          <div class="plan-title">{{ plans.pro.name }}</div>
-          <div class="plan-price">${{ plans.pro.price_monthly }}<span>/month</span></div>
-          <ul class="plan-list">
-            {% for f in plans.pro.features %}
-            <li>{{ f }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
+      {% include "_plans_grid.html" %}
       <div class="button-row">
         <a class="btn primary" href="/register">Start free</a>
         <a class="btn" href="/upgrade">Upgrade to Pro</a>
