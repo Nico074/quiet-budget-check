@@ -28,7 +28,8 @@ STRIPE_PRICE_ID_YEARLY = os.getenv("STRIPE_PRICE_ID_YEARLY", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 APP_BASE_URL = os.getenv("APP_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
 STRIPE_PORTAL_RETURN_URL = os.getenv("STRIPE_PORTAL_RETURN_URL", f"{APP_BASE_URL}/billing")
-PRO_PAYWALL_ENABLED = os.getenv("PRO_PAYWALL_ENABLED", "false").lower() == "true"
+# Demo mode: keep all pages accessible during Phase 2 UI work.
+PRO_PAYWALL_ENABLED = False
 DEMO_MODE = os.getenv("DEMO_MODE", "false").lower() == "true"
 
 app = FastAPI()
@@ -182,18 +183,14 @@ def get_plan_state_for_user(user_id: int | None):
 
 
 def require_pro(user_id: int | None):
+    if not PRO_PAYWALL_ENABLED:
+        return None
     return get_plan_state_for_user(user_id) == "pro"
 
 
 def pro_guard(request: Request, user_id: int, active_page: str):
-    if not PRO_PAYWALL_ENABLED:
-        return None
-    if require_pro(user_id):
-        return None
-    return templates.TemplateResponse(
-        "upgrade_required.html",
-        {"request": request, "active_page": active_page, "plan_state": get_plan_state_for_user(user_id)},
-    )
+    # Explicit no-op guard in demo mode.
+    return None
 
 
 def demo_history():
@@ -535,6 +532,56 @@ def privacy_page(request: Request):
 @app.get("/terms", response_class=HTMLResponse)
 def terms_page(request: Request):
     return render_template("terms.html", {"request": request, "user_id": get_user_id_from_request(request)})
+
+
+@app.get("/about", response_class=HTMLResponse)
+def about_page(request: Request):
+    return render_template("about.html", {"request": request, "user_id": get_user_id_from_request(request)})
+
+
+@app.get("/careers", response_class=HTMLResponse)
+def careers_page(request: Request):
+    return render_template("careers.html", {"request": request, "user_id": get_user_id_from_request(request)})
+
+
+@app.get("/contact", response_class=HTMLResponse)
+def contact_page(request: Request):
+    return render_template("contact.html", {"request": request, "user_id": get_user_id_from_request(request)})
+
+
+@app.get("/security", response_class=HTMLResponse)
+def security_page(request: Request):
+    return render_template("security.html", {"request": request, "user_id": get_user_id_from_request(request)})
+
+
+@app.get("/social/twitter", response_class=HTMLResponse)
+def social_twitter_page(request: Request):
+    return render_template("social_twitter.html", {"request": request, "user_id": get_user_id_from_request(request)})
+
+
+@app.get("/social/linkedin", response_class=HTMLResponse)
+def social_linkedin_page(request: Request):
+    return render_template("social_linkedin.html", {"request": request, "user_id": get_user_id_from_request(request)})
+
+
+@app.get("/social/youtube", response_class=HTMLResponse)
+def social_youtube_page(request: Request):
+    return render_template("social_youtube.html", {"request": request, "user_id": get_user_id_from_request(request)})
+
+
+@app.get("/x", response_class=HTMLResponse)
+def social_x_alias(request: Request):
+    return RedirectResponse(url="/social/twitter", status_code=303)
+
+
+@app.get("/linkedin", response_class=HTMLResponse)
+def social_linkedin_alias(request: Request):
+    return RedirectResponse(url="/social/linkedin", status_code=303)
+
+
+@app.get("/youtube", response_class=HTMLResponse)
+def social_youtube_alias(request: Request):
+    return RedirectResponse(url="/social/youtube", status_code=303)
 
 
 @app.post("/check", response_class=HTMLResponse)
@@ -886,7 +933,7 @@ def run_check_page(request: Request):
     if gate:
         return gate
     plan_state = get_plan_state_for_user(user_id)
-    return templates.TemplateResponse(
+    return render_template(
         "run_check.html",
         {"request": request, "active_page": "run-check", "plan_state": plan_state},
     )

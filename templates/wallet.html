@@ -1,8 +1,5 @@
 {% extends "layout_app.html" %}
 {% block title %}Wallet • Momentum Labs{% endblock %}
-{% block page_title %}Wallet overview{% endblock %}
-{% block page_subtitle %}Your monthly allocation and category breakdown.{% endblock %}
-{% block page_actions %}<button class="btn primary">Edit allocations</button>{% endblock %}
 {% block content %}
 <div class="card-grid">
   <div class="card">
@@ -30,7 +27,7 @@
       </div>
       <div class="empty-title">Set your allocation</div>
       <div class="muted">Define how you want income split across needs and goals.</div>
-      <button class="btn primary">Build allocation</button>
+      <a class="btn primary" href="/run-check">Build allocation</a>
       <div class="empty-hint">You can adjust anytime.</div>
     </div>
   </div>
@@ -42,7 +39,7 @@
       </div>
       <div class="empty-title">No categories yet</div>
       <div class="muted">Add your first category to see the breakdown.</div>
-      <button class="btn primary">Add category</button>
+      <a class="btn primary" href="/run-check">Add category</a>
       <div class="empty-hint">Keep it simple: 3–5 categories is enough.</div>
     </div>
   </div>

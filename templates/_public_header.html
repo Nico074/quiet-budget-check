@@ -1,20 +1,20 @@
 <header class="container header sticky">
   <a class="brand" href="/">
-    <span class="brand-mark" aria-hidden="true"></span>
-    <span class="brand-text">
-      <span class="brand-name">Momentum Labs</span>
-      <span class="brand-sub">Behavioral Intelligence</span>
+    <span class="ml-logo" aria-hidden="true"><span class="ml-core">M</span></span>
+    <span class="ml-brand-text">
+      <span class="ml-brand-name">Momentum Labs</span>
+      <span class="ml-brand-sub">Behavioral Intelligence</span>
     </span>
   </a>
+  {% if user_id %}
   <nav class="header-nav">
-    <a href="/pricing">Pricing</a>
-    <a href="/privacy">Privacy</a>
-    <a href="/terms">Terms</a>
+    <a class="{% if request.url.path == '/dashboard' %}active{% endif %}" href="/dashboard">Dashboard</a>
   </nav>
+  {% endif %}
   <div class="header-actions">
     {% if user_id %}
-    <a href="/dashboard" class="btn">Dashboard</a>
-    <a href="/logout" class="btn-ghost">Logout</a>
+    <a href="/account" class="btn icon-only" aria-label="Profile"><span class="user-dot">U</span></a>
+    <a href="/logout" class="btn">Logout</a>
     {% else %}
     <a href="/login" class="btn">Log in</a>
     <a href="/register" class="btn-ghost">Register</a>

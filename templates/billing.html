@@ -1,51 +1,68 @@
 {% extends "layout_app.html" %}
 {% block title %}Billing • Momentum Labs{% endblock %}
-{% block page_title %}Billing{% endblock %}
-{% block page_subtitle %}Manage your plan and payment history.{% endblock %}
-{% block page_actions %}
-  {% if plan_state != "pro" %}
-  <a class="btn primary" href="/upgrade">Upgrade</a>
-  {% else %}
-  <a class="btn primary" href="/billing/portal">Manage subscription</a>
-  {% endif %}
-{% endblock %}
 {% block content %}
-<div class="card-grid">
-  <div class="card">
-    <h2>Current plan</h2>
-    <div class="plan-row">
-      <div>
-        <div class="muted small">Plan</div>
-        <div class="big">{{ "Pro" if plan_state == "pro" else "Free" }}</div>
+<section class="premium-hero card">
+  <div>
+    <div class="premium-title">Billing</div>
+    <div class="premium-sub">Manage your plan, invoices, and subscription status.</div>
+  </div>
+  <div class="premium-chips">
+    {% if plan_state != "pro" %}
+    <a class="btn primary" href="/upgrade">Upgrade</a>
+    {% else %}
+    <a class="btn primary" href="/billing/portal">Manage subscription</a>
+    {% endif %}
+  </div>
+</section>
+
+<section class="overview-grid" style="margin-top:16px;">
+  <article class="card" style="padding:16px;">
+    <h3>Current plan</h3>
+    <div class="kpi-grid" style="margin-top:10px;">
+      <div class="metric-tile card" style="padding:12px;">
+        <div class="label">Plan</div>
+        <div class="value">{{ "Pro" if plan_state == "pro" else "Free" }}</div>
       </div>
-      <div>
-        <div class="muted small">Next billing date</div>
-        <div class="big">{{ "Feb 28, 2026" if plan_state == "pro" else "—" }}</div>
+      <div class="metric-tile card" style="padding:12px;">
+        <div class="label">Next billing</div>
+        <div class="value">{{ "Feb 28, 2026" if plan_state == "pro" else "—" }}</div>
       </div>
     </div>
-    <ul class="plan-list">
+    <ul class="plan-list" style="margin-top:14px;">
       <li>Advanced checks & scenarios</li>
       <li>Goal tracking and templates</li>
       <li>Momentum insights</li>
     </ul>
-    <div class="button-row">
-      <button class="secondary">{{ "Manage plan" if plan_state == "pro" else "Downgrade" }}</button>
+    <div class="premium-chips" style="margin-top:10px;">
+      {% if plan_state == "pro" %}
+      <a class="btn" href="/billing/portal">Manage plan</a>
+      {% else %}
+      <a class="btn" href="/upgrade">View plans</a>
+      {% endif %}
       {% if plan_state != "pro" %}
       <a class="btn primary" href="/upgrade">Upgrade to Pro</a>
       {% endif %}
     </div>
-  </div>
-  <div class="card">
-    <h2>Payment history</h2>
-    <div class="empty-state compact">
-      <div class="empty-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" role="img"><path d="M4 7h16v10H4z" /><path d="M7 11h4" /></svg>
+  </article>
+
+  <div class="side-stack">
+    <article class="card" style="padding:16px;">
+      <h3>Payment history</h3>
+      <div class="empty-state" style="margin-top:12px;">
+        <div class="empty-title">No payments yet</div>
+        <div class="muted">You’re on the Free plan. Upgrade anytime.</div>
+        {% if plan_state != "pro" %}
+        <a class="btn primary" href="/upgrade">Upgrade to Pro</a>
+        {% endif %}
       </div>
-      <div class="empty-title">No payments yet</div>
-      <div class="muted">You’re on the Free plan. Upgrade anytime.</div>
-      <button class="btn primary">Upgrade to Pro</button>
-      <div class="empty-hint">Cancel anytime, no questions asked.</div>
-    </div>
+    </article>
+    <article class="card" style="padding:16px;">
+      <h3>Billing support</h3>
+      <div class="muted">Need help with invoices or subscription settings? Contact support from the Contact page.</div>
+      <div class="premium-chips" style="margin-top:12px;">
+        <a class="btn" href="/contact">Contact support</a>
+      </div>
+    </article>
   </div>
-</div>
+</section>
 {% endblock %}

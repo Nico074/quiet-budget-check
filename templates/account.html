@@ -1,10 +1,14 @@
 {% extends "layout_app.html" %}
 {% block title %}Account • Momentum Labs{% endblock %}
-{% block page_title %}Account{% endblock %}
-{% block page_subtitle %}Profile, preferences, and security in one place.{% endblock %}
-{% block page_actions %}<button class="btn primary" type="button">Save all</button>{% endblock %}
 {% block content %}
-<div class="card">
+<section class="premium-hero card">
+  <div>
+    <div class="premium-title">Account</div>
+    <div class="premium-sub">Profile, preferences, and security in one place.</div>
+  </div>
+</section>
+
+<section class="card" style="margin-top:16px; padding:16px;">
   <div class="tabs">
     <button class="tab-btn active" type="button" data-tab="profile">Profile info</button>
     <button class="tab-btn" type="button" data-tab="preferences">Preferences</button>
@@ -48,14 +52,14 @@
           </div>
         </div>
         <div class="profile-actions">
-          <button class="btn-primary" type="submit">Save profile</button>
-          <button class="btn-ghost" type="button">Cancel</button>
+          <button class="btn primary" type="submit">Save profile</button>
+          <a class="btn-ghost" href="/dashboard">Cancel</a>
         </div>
       </form>
     </div>
 
     <div class="tab-panel" data-panel="preferences">
-      <div class="card">
+      <div class="card" style="padding:16px;">
         <h2>Companion tone</h2>
         <p class="muted">Pick how the Companion speaks to you.</p>
         <form method="post" action="/preferences" class="profile-form">
@@ -68,7 +72,7 @@
             <option value="coach" {% if profile.companion_tone == "coach" %}selected{% endif %}>Coach</option>
           </select>
           <div class="profile-actions">
-            <button class="btn-primary" type="submit">Save tone</button>
+            <button class="btn primary" type="submit">Save tone</button>
           </div>
         </form>
       </div>
@@ -93,24 +97,24 @@
         </div>
         <div class="empty-title">Security center</div>
         <div class="muted">Keep your account safe with quick checks.</div>
-        <button class="btn primary">Review security</button>
+        <a class="btn primary" href="/security">Review security</a>
         <div class="empty-hint">We’ll surface any unusual activity here.</div>
       </div>
       <div class="card-grid">
         <div class="card">
           <h2>Password</h2>
           <p class="muted">Update your password regularly.</p>
-          <button class="secondary">Change password</button>
+          <a class="btn" href="/security">Change password</a>
         </div>
         <div class="card">
           <h2>Sessions</h2>
           <p class="muted">Active devices and sign-outs.</p>
-          <button class="secondary">Review sessions</button>
+          <a class="btn" href="/security">Review sessions</a>
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 {% endblock %}
 
 {% block scripts %}

@@ -1,210 +1,107 @@
 {% extends "layout_app.html" %}
-{% block title %}Dashboard • Momentum Labs{% endblock %}
-{% block page_title %}Hey {{ first_name }} 👋{% endblock %}
-{% block page_subtitle %}Here’s your budget pulse and recent activity.{% endblock %}
-{% block page_actions %}{% endblock %}
+{% block title %}Dashboard — Momentum Labs{% endblock %}
 {% block content %}
-<section class="bento-grid hero-bento">
-  <div class="card bento-card wide health-card">
-    <div class="bento-title">Financial Health Score</div>
-    <div class="bento-sub">Weighted model across stability, deviation, cushion, and consistency.</div>
-    <div class="score-ring" style="--score: {{ health_score }};">
-      <span class="score-value" id="healthScore" data-score="{{ health_score }}" data-trend="{{ health_trend }}">{{ health_score }}</span>
-      <span class="score-trend {% if health_trend >= 0 %}up{% else %}down{% endif %}" id="healthTrend">
-        {% if health_trend >= 0 %}▲{% else %}▼{% endif %} {{ "+" if health_trend > 0 else "" }}{{ health_trend }}
-      </span>
-    </div>
-  <div class="score-label">{{ health_label }}</div>
-    <div class="driver-list">
-      <div class="muted small">Top drivers</div>
-      {% for d in health_drivers %}
-        <div class="driver-row"><span>{{ d[0] }}</span><strong>{{ d[1] }}</strong></div>
-      {% endfor %}
-    </div>
-    <div class="score-meta">
-      <span class="muted small">Stability {{ health_breakdown.stability }}%</span>
-      <span class="muted small">Drift {{ health_breakdown.acceleration }}%</span>
-      <span class="muted small">Cushion {{ health_breakdown.cushion }}%</span>
-      <span class="muted small">Runway {{ health_breakdown.runway }}%</span>
-      <span class="muted small">Fixed ratio {{ 100 - health_breakdown.affordability }}%</span>
-      <span class="muted small">Goal alignment {{ health_breakdown.goal_alignment }}%</span>
-      <span class="muted small">Consistency {{ health_breakdown.consistency }}%</span>
-      <span class="muted small">Shock {{ health_breakdown.shock }}%</span>
-    </div>
-    <div class="muted small">Risk: {{ health_risk|title }} · {{ health_reason }}</div>
-    <div class="next-steps">
-      <div class="muted small">What to do next</div>
-      <ul>
-        {% for s in health_steps %}
-          <li>{{ s }}</li>
-        {% endfor %}
-      </ul>
-    </div>
+<section class="premium-hero card">
+  <div>
+    <div class="premium-title">Floor Overview</div>
+    <div class="premium-sub">Clean signal. Less noise. Keep momentum visible.</div>
   </div>
-  <div class="card bento-card">
-    <div class="bento-title">Momentum streaks</div>
-    <div class="streak-list">
-      <div class="streak-row"><span>Stable pace</span><strong>{{ streaks.stable }} days</strong></div>
-      <div class="streak-row"><span>Smart adjustments</span><strong>{{ streaks.adjust }} days</strong></div>
-      <div class="streak-row"><span>Goal contributions</span><strong>{{ streaks.goal }} days</strong></div>
-    </div>
-    <div class="streak-glow" data-streak="{{ streaks.stable }}"></div>
-    <div class="muted small">Keep it alive: one steady check today.</div>
+  <div class="premium-chips">
+    <span class="badge chip">Live</span>
+    <span class="badge chip">Green Grid</span>
+    <span class="badge chip">Demo Mode</span>
   </div>
-  <div class="card bento-card">
-    <div class="bento-title">Momentum Engine</div>
-    <div class="bento-sub">Live behavioral flow — calm and responsive.</div>
-    <div class="momentum-track">
-      <div class="momentum-aura" data-status="{{ pace_status }}"></div>
-      <div class="momentum-line"></div>
-    </div>
-    <div class="momentum-meta">
-      <span>Steady</span>
-      <span class="muted">Reactive, not harsh</span>
-      <span>Drifting</span>
-    </div>
-  </div>
-  <div class="card bento-card wide projection-card">
-    <div class="bento-title">6‑Month Projection</div>
-    <div class="bento-sub">If current behavior continues.</div>
-    <div class="projection-chart">
-      {% for p in projection.points %}
-        <span style="--p:{{ p }}%"></span>
-      {% endfor %}
-    </div>
-  <div class="projection-meta">
-    <span>Safety buffer</span>
-    <span class="muted">{{ projection.buffer|title }}</span>
-  </div>
-    <div class="projection-labels">
-      <span class="muted small">Tight</span>
-      <span class="muted small">Comfortable</span>
-    </div>
-    <div class="muted small">Projection is a behavioral estimate, not a promise.</div>
-  <div class="projection-controls">
-      <label>Income change
-        <input type="range" id="projIncome" min="-20" max="20" value="0" />
-      </label>
-      <label>Expense change
-        <input type="range" id="projExpense" min="-20" max="20" value="0" />
-      </label>
-    </div>
-  </div>
-  <details class="card bento-card full collapsible">
-    <summary>Companion insights</summary>
-    <div class="coach-card">
-    <div class="bento-title">Financial Companion</div>
-    <div class="bento-sub">Supportive insight based on your recent rhythm.</div>
-    <div class="coach-message">{{ companion.message }}</div>
-    {% if companion.tips|length > 0 %}
-    <ul class="coach-list">
-      {% for t in companion.tips %}
-      <li>{{ t }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    <div class="coach-actions">
-      {% for action in companion.actions %}
-        <button class="{% if loop.first %}btn primary{% else %}ghost{% endif %}">{{ action }}</button>
-      {% endfor %}
-    </div>
-    <div class="coach-input">
-      <input type="text" placeholder="Ask the companion (mock)..." />
-      <div class="chip-row">
-        <button class="ghost">What should I adjust?</button>
-        <button class="ghost">Show risk drivers</button>
-        <button class="ghost">Create a plan</button>
-      </div>
-    </div>
-    </div>
-  </details>
 </section>
 
-<div class="dash-card">
-  <div class="dash-card-head">
-    <h2>Recent checks</h2>
-    <span class="muted small">Last 5 checks</span>
-  </div>
-  {% if not history %}
-    <div class="empty-state">
-      <div class="empty-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" role="img"><path d="M4 12a8 8 0 1 0 16 0" /><path d="M8 12h8" /></svg>
+<section class="kpi-grid">
+  <article class="card metric-tile">
+    <div class="label">Health score</div>
+    <div class="value">{{ health_score }}</div>
+    <div class="sub">{{ health_label }} · {{ health_risk|title }}</div>
+  </article>
+  <article class="card metric-tile">
+    <div class="label">Stable streak</div>
+    <div class="value">{{ streaks.stable }}</div>
+    <div class="sub">days in a row</div>
+  </article>
+  <article class="card metric-tile">
+    <div class="label">Adjustments</div>
+    <div class="value">{{ streaks.adjust }}</div>
+    <div class="sub">smart pace days</div>
+  </article>
+  <article class="card metric-tile">
+    <div class="label">Goal streak</div>
+    <div class="value">{{ streaks.goal }}</div>
+    <div class="sub">contribution days</div>
+  </article>
+</section>
+
+<section class="overview-grid">
+  <article class="card chart-card">
+    <div class="chart-head">
+      <div>
+        <div class="label">Momentum</div>
+        <h3>Control panel chart</h3>
+        <div class="muted">Structured view for trend, drift and runway.</div>
       </div>
-      <div class="empty-title">No checks yet</div>
-      <div class="muted">Start with one quick check to set your pace.</div>
-      <a class="btn primary" href="/run-check">Run your first check</a>
-      <div class="empty-hint">We’ll keep it private and lightweight.</div>
-    </div>
-  {% else %}
-    <div class="table">
-      <div class="row head">
-        <div>Date</div><div>Daily budget</div><div>Status</div><div>Note</div><div>Action</div>
+      <div class="premium-chips">
+        <span class="badge chip">Monthly</span>
+        <span class="badge chip">Auto</span>
       </div>
-      {% for h in history %}
-        <div class="row">
-          <div>{{ h.created_at.strftime("%Y-%m-%d %H:%M") }}</div>
-          <div>${{ "%.2f"|format(h.daily_budget) }}</div>
-          <div class="status status-{{ h.status }}">{{ h.status }}</div>
-          <div class="muted">{{ h.message }}</div>
-          <div><a class="row-action" href="/history">View details</a></div>
-        </div>
-      {% endfor %}
     </div>
-  {% endif %}
-</div>
+    <div class="chart-placeholder">Chart area</div>
+  </article>
 
-<details class="card collapsible">
-  <summary>More insights</summary>
-  <section class="bento-grid insights-grid">
-  <div class="card bento-card wide insights-tile">
-    <div class="bento-title">Top Savings Rates</div>
-    <div class="bento-sub">High-yield picks with steady access.</div>
-    <div class="bento-tag">High yield</div>
-    <div class="mini-table">
-      <div class="mini-row head"><div>Bank</div><div>Rate</div><div>Notes</div></div>
-      <div class="mini-row"><div>Lumen</div><div>4.8%</div><div>Online only</div></div>
-      <div class="mini-row"><div>Northbay</div><div>4.6%</div><div>No minimum</div></div>
-      <div class="mini-row"><div>Riverline</div><div>4.5%</div><div>Instant access</div></div>
+  <div class="side-stack">
+    <article class="card tip-card">
+      <div class="label">Smart tip</div>
+      <h3>{{ health_reason }}</h3>
+      <div class="muted">{% if health_steps and health_steps|length > 0 %}{{ health_steps[0] }}{% else %}Keep your current pace — it’s working.{% endif %}</div>
+    </article>
+    <details class="card detail-card">
+      <summary>Metric breakdown</summary>
+      <div class="detail-grid">
+        <div>Stability <strong>{{ health_breakdown.stability }}%</strong></div>
+        <div>Drift <strong>{{ health_breakdown.acceleration }}%</strong></div>
+        <div>Cushion <strong>{{ health_breakdown.cushion }}%</strong></div>
+        <div>Runway <strong>{{ health_breakdown.runway }}%</strong></div>
+        <div>Fixed ratio <strong>{{ 100 - health_breakdown.affordability }}%</strong></div>
+        <div>Goal alignment <strong>{{ health_breakdown.goal_alignment }}%</strong></div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="card table-card">
+  <div class="table-head">
+    <div>
+      <h3>Recent checks</h3>
+      <div class="muted">Last {{ history|length }} entries</div>
     </div>
-    <a class="row-action" href="#">View more</a>
+    <a class="btn" href="/history">Open history</a>
   </div>
 
-  <div class="card bento-card insights-tile">
-    <div class="bento-title">Top Term Deposits</div>
-    <div class="bento-sub">Best fixed-term options this month.</div>
-    <div class="bento-tag trend">Trending</div>
-    <ul class="rate-list">
-      <li><span>5.2% — 12 months</span><span class="muted">Coastal</span></li>
-      <li><span>5.0% — 9 months</span><span class="muted">Atlas</span></li>
-      <li><span>4.7% — 6 months</span><span class="muted">Hearth</span></li>
-    </ul>
+  <div class="table-wrap">
+    <table class="premium-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Daily budget</th>
+          <th>Status</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in history %}
+        <tr>
+          <td>{{ item.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+          <td>${{ "%.2f"|format(item.daily_budget) }}</td>
+          <td><span class="badge chip">{{ item.status }}</span></td>
+          <td>{{ item.message }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
-
-  <div class="card bento-card insights-tile tip-tile">
-    <div class="tip-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" role="img"><path d="M12 3a6 6 0 0 0-3 11v3h6v-3a6 6 0 0 0-3-11z" /><path d="M9 20h6" /></svg>
-    </div>
-    <div class="bento-title">Smart tip</div>
-    <div class="bento-sub">Set a “fun budget” cap and auto‑transfer the rest into savings.</div>
-  </div>
-
-  <div class="card bento-card insights-tile">
-    <div class="bento-title">Sample allocation</div>
-    <div class="bento-sub">Balanced profile</div>
-    <div class="alloc-row">
-      <div>Essentials</div><div>55%</div>
-    </div>
-    <div class="alloc-bar"><span style="width:55%"></span></div>
-    <div class="alloc-row">
-      <div>Lifestyle</div><div>25%</div>
-    </div>
-    <div class="alloc-bar soft"><span style="width:25%"></span></div>
-    <div class="alloc-row">
-      <div>Savings</div><div>20%</div>
-    </div>
-    <div class="alloc-bar mint"><span style="width:20%"></span></div>
-  </div>
-  </section>
-</details>
-
+</section>
 {% endblock %}

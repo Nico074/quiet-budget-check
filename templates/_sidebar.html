@@ -1,74 +1,33 @@
-<aside class="sidebar">
-  <a class="sidebar-brand" href="/">
-    <span class="brand-mark" aria-hidden="true"></span>
-    <span class="brand-text">
-      <span class="brand-name">Momentum Labs</span>
-      <span class="brand-sub">Behavioral Intelligence</span>
-    </span>
-  </a>
-
-  <nav class="sidebar-nav">
-    <div class="nav-group">
-      <div class="nav-title">Main</div>
-      <a class="nav-item {% if active_page == 'dashboard' %}active{% endif %}" href="/dashboard">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" role="img"><path d="M4 12l8-8 8 8v7a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1z" /></svg>
-        </span>
-        <span>Dashboard</span>
-      </a>
-      <a class="nav-item {% if active_page == 'run-check' %}active{% endif %} {% if paywall_enabled and plan_state != 'pro' %}locked{% endif %}" href="/run-check">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" role="img"><path d="M12 3v18M3 12h18" /></svg>
-        </span>
-        <span>Run a check</span>
-      </a>
-      <a class="nav-item {% if active_page == 'history' %}active{% endif %}" href="/history">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" role="img"><path d="M6 4h12M6 10h12M6 16h12M6 22h12" /></svg>
-        </span>
-        <span>History</span>
-      </a>
+<aside class="sidebar sidebar-panel">
+  <div class="sidebar-brand-wrap">
+    <span class="ml-logo" aria-hidden="true"><span class="ml-core">M</span></span>
+    <div class="ml-brand-text">
+      <div class="ml-brand-name">Momentum Labs</div>
+      <div class="ml-brand-sub">Behavioral Intelligence</div>
     </div>
+  </div>
 
-    <div class="nav-group">
-      <div class="nav-title">Growth</div>
-      <a class="nav-item {% if active_page == 'goals' %}active{% endif %} {% if paywall_enabled and plan_state != 'pro' %}locked{% endif %}" href="/goals">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" role="img"><path d="M4 16l6-6 4 4 6-8" /><path d="M20 6v6h-6" /></svg>
-        </span>
-        <span>Goals</span>
-        <span class="nav-pill">Pro</span>
-      </a>
-      <a class="nav-item {% if active_page == 'wallet' %}active{% endif %} {% if paywall_enabled and plan_state != 'pro' %}locked{% endif %}" href="/wallet">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" role="img"><path d="M3 7h18v10H3z" /><path d="M7 7v10" /></svg>
-        </span>
-        <span>Wallet overview</span>
-      </a>
-    </div>
-
-    <div class="nav-group">
-      <div class="nav-title">Account</div>
-      <a class="nav-item {% if active_page == 'account' %}active{% endif %}" href="/account">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" role="img"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4z" /><path d="M4 20a8 8 0 0 1 16 0" /></svg>
-        </span>
-        <span>Account</span>
-      </a>
-      <a class="nav-item {% if active_page == 'upgrade' %}active{% endif %}" href="/upgrade">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" role="img"><path d="M12 3l3 6 6 .8-4.5 4.4 1.1 6.6L12 17l-5.6 3.8 1.1-6.6L3 9.8 9 9z" /></svg>
-        </span>
-        <span>Upgrade</span>
-        <span class="nav-pill">Pro</span>
-      </a>
-      <a class="nav-item {% if active_page == 'billing' %}active{% endif %}" href="/billing">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" role="img"><path d="M4 7h16v10H4z" /><path d="M7 11h4" /></svg>
-        </span>
-        <span>Billing</span>
-      </a>
-    </div>
+  <div class="side-title">Main</div>
+  <nav class="side-nav">
+    <a class="btn {% if active_page == 'dashboard' %}active{% endif %}" href="/dashboard">Dashboard</a>
+    <a class="btn {% if active_page in ['run-check','run_check'] %}active{% endif %}" href="/run-check">Run a check</a>
+    <a class="btn {% if active_page == 'history' %}active{% endif %}" href="/history">History</a>
   </nav>
 
+  <div class="side-title">Growth</div>
+  <nav class="side-nav">
+    <a class="btn {% if active_page == 'goals' %}active{% endif %}" href="/goals">Goals <span class="badge" style="margin-left:6px;padding:2px 8px;">Pro</span></a>
+    <a class="btn {% if active_page == 'wallet' %}active{% endif %}" href="/wallet">Wallet overview</a>
+  </nav>
+
+  <div class="side-title">Account</div>
+  <nav class="side-nav">
+    <a class="btn {% if active_page == 'account' %}active{% endif %}" href="/account">Account</a>
+    <a class="btn {% if active_page == 'upgrade' %}active{% endif %}" href="/upgrade">Upgrade <span class="badge" style="margin-left:6px;padding:2px 8px;">Pro</span></a>
+    <a class="btn {% if active_page == 'billing' %}active{% endif %}" href="/billing">Billing</a>
+  </nav>
+
+  <div class="side-note">
+    Demo mode enabled
+  </div>
 </aside>

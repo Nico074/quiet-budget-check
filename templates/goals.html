@@ -1,8 +1,5 @@
 {% extends "layout_app.html" %}
 {% block title %}Goals • Momentum Labs{% endblock %}
-{% block page_title %}Goals{% endblock %}
-{% block page_subtitle %}Track savings goals and celebrate progress.{% endblock %}
-{% block page_actions %}<button class="btn primary">Add goal</button>{% endblock %}
 {% block content %}
 <div class="card-grid goals-grid">
   <div class="card goal-card">
@@ -37,7 +34,7 @@
     </div>
     <div class="empty-title">Create your first goal</div>
     <div class="muted">Turn a wish into a plan with one simple target.</div>
-    <button class="btn primary">Add goal</button>
+    <a class="btn primary" href="/run-check">Add goal</a>
     <div class="empty-hint">We’ll keep progress gentle and motivating.</div>
   </div>
   <div class="card goal-card momentum-panel">

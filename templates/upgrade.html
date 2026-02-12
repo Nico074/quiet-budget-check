@@ -1,34 +1,26 @@
 {% extends "layout_app.html" %}
 {% block title %}Upgrade • Momentum Labs{% endblock %}
-{% block page_title %}Upgrade to Pro{% endblock %}
-{% block page_subtitle %}A gentle upgrade for smarter budgeting and calm control.{% endblock %}
-{% block page_actions %}<a class="btn primary" href="/billing">View billing</a>{% endblock %}
 {% block content %}
-<div class="pricing-layout">
-  <section class="card before-after">
-    <div class="bento-title">Before vs after</div>
-    <div class="bento-sub">See how Pro changes your emotional load.</div>
-    <div class="before-after-grid">
-      <div class="before-card">
-        <div class="muted small">Before</div>
-        <p>Guessing. Reacting late. Small stress stacking up.</p>
-      </div>
-      <div class="after-card">
-        <div class="muted small">After</div>
-        <p>Momentum stays calm. You anticipate and adjust early.</p>
-      </div>
-    </div>
-  </section>
-  <section class="card plan-compare">
+<section class="premium-hero card">
+  <div>
+    <div class="premium-title">Upgrade to Pro</div>
+    <div class="premium-sub">A calmer plan for better momentum and clearer control.</div>
+  </div>
+  <div class="premium-chips">
+    <a class="btn" href="/billing">View billing</a>
+  </div>
+</section>
+
+<section class="upgrade-grid">
+  <article class="card" style="padding:16px;">
     <div class="compare-head">
-      <h2>Plan comparison</h2>
+      <h3>Plan comparison</h3>
       <div class="pill">Save 20% yearly</div>
     </div>
     <div class="plan-toggle">
       <button class="toggle-btn active" type="button" data-plan="monthly">Monthly</button>
       <button class="toggle-btn" type="button" data-plan="yearly">Yearly</button>
     </div>
-
     <div class="plan-grid">
       <div class="plan-card">
         <div class="plan-title">{{ plans.free.name }}</div>
@@ -49,51 +41,32 @@
         </ul>
       </div>
     </div>
+  </article>
 
-    <div class="benefits">
-      <h3>Why Pro</h3>
-      <ul class="plan-list">
-        <li>Keep recurring income and expenses organized.</li>
-        <li>See your pace at a glance with live previews.</li>
-        <li>Turn goals into calm, visible progress.</li>
-        <li>Export or review trends when you need them.</li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="card checkout">
+  <article class="card" style="padding:16px;">
     <div class="checkout-head">
-      <h2>Checkout</h2>
+      <h3>Checkout</h3>
       <div class="muted small">Secure Stripe Checkout (test mode).</div>
     </div>
-
     {% if error %}
     <div class="form-error">{{ error }}</div>
     {% endif %}
-
-    <div class="form-grid">
-      <label class="full">
-        Email
-        <input type="email" value="{{ email or '' }}" placeholder="you@email.com" readonly />
-        <span class="help">Used for receipts and account access.</span>
-      </label>
-      <div class="full muted small">Card details are collected securely by Stripe after you continue.</div>
-    </div>
-
-    <form method="post" action="/checkout">
+    <form method="post" action="/checkout" class="premium-form">
       <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
       <input type="hidden" name="plan_interval" id="planInterval" value="monthly" />
+      <label class="full">
+        <span>Email</span>
+        <input type="email" value="{{ email or '' }}" placeholder="you@email.com" readonly />
+      </label>
       <button class="btn primary full" id="checkoutBtn" type="submit">Continue to Stripe</button>
     </form>
-
     <div class="trust-row">
       <span>Cancel anytime</span>
       <span>No data sold</span>
       <span>Secure payments</span>
     </div>
-
-  </section>
-</div>
+  </article>
+</section>
 {% endblock %}
 
 {% block scripts %}
