@@ -1,107 +1,101 @@
 {% extends "layout_app.html" %}
-{% block title %}Dashboard — Momentum Labs{% endblock %}
+{% block title %}Dashboard • Momentum Labs{% endblock %}
 {% block content %}
-<section class="premium-hero card">
-  <div>
-    <div class="premium-title">Floor Overview</div>
-    <div class="premium-sub">Clean signal. Less noise. Keep momentum visible.</div>
+<section class="dash-grid">
+  <div class="kpi-card card">
+    <span class="kpi-title">Health Score</span>
+    <strong class="kpi-value">{{ health_score }}</strong>
+    <span class="kpi-delta {% if health_trend >= 0 %}up{% else %}down{% endif %}">
+      {% if health_trend >= 0 %}+{% endif %}{{ health_trend }} this week
+    </span>
   </div>
-  <div class="premium-chips">
-    <span class="badge chip">Live</span>
-    <span class="badge chip">Green Grid</span>
-    <span class="badge chip">Demo Mode</span>
+  <div class="kpi-card card">
+    <span class="kpi-title">Stable Streak</span>
+    <strong class="kpi-value">{{ streaks.stable }} days</strong>
+    <span class="kpi-delta up">Pace controlled</span>
+  </div>
+  <div class="kpi-card card">
+    <span class="kpi-title">Adjustment Streak</span>
+    <strong class="kpi-value">{{ streaks.adjust }} days</strong>
+    <span class="kpi-delta">Small corrections</span>
+  </div>
+  <div class="kpi-card card">
+    <span class="kpi-title">Risk Level</span>
+    <strong class="kpi-value">{{ health_risk|title }}</strong>
+    <span class="kpi-delta">{{ health_reason }}</span>
   </div>
 </section>
 
-<section class="kpi-grid">
-  <article class="card metric-tile">
-    <div class="label">Health score</div>
-    <div class="value">{{ health_score }}</div>
-    <div class="sub">{{ health_label }} · {{ health_risk|title }}</div>
-  </article>
-  <article class="card metric-tile">
-    <div class="label">Stable streak</div>
-    <div class="value">{{ streaks.stable }}</div>
-    <div class="sub">days in a row</div>
-  </article>
-  <article class="card metric-tile">
-    <div class="label">Adjustments</div>
-    <div class="value">{{ streaks.adjust }}</div>
-    <div class="sub">smart pace days</div>
-  </article>
-  <article class="card metric-tile">
-    <div class="label">Goal streak</div>
-    <div class="value">{{ streaks.goal }}</div>
-    <div class="sub">contribution days</div>
-  </article>
-</section>
-
-<section class="overview-grid">
-  <article class="card chart-card">
-    <div class="chart-head">
-      <div>
-        <div class="label">Momentum</div>
-        <h3>Control panel chart</h3>
-        <div class="muted">Structured view for trend, drift and runway.</div>
-      </div>
-      <div class="premium-chips">
-        <span class="badge chip">Monthly</span>
-        <span class="badge chip">Auto</span>
+<section class="analytics-grid">
+  <article class="card analytics-main">
+    <div class="card-head">
+      <h2>Activity Tracker</h2>
+      <div class="chip-row">
+        <span class="chip">Monthly</span>
+        <span class="chip">Auto</span>
       </div>
     </div>
-    <div class="chart-placeholder">Chart area</div>
+    <svg viewBox="0 0 800 260" class="line-graph" role="img" aria-label="Activity trend chart">
+      <defs>
+        <linearGradient id="lineA" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#26f2b2"/>
+          <stop offset="100%" stop-color="#47d8ff"/>
+        </linearGradient>
+      </defs>
+      <polyline points="0,180 70,130 140,145 210,110 280,160 350,120 420,140 490,95 560,150 630,135 700,170 770,125 800,138"></polyline>
+      <polyline class="secondary" points="0,210 70,165 140,178 210,185 280,146 350,170 420,160 490,150 560,172 630,148 700,159 770,146 800,152"></polyline>
+    </svg>
+    <div class="legend-row">
+      <span><i class="dot a"></i> Stability</span>
+      <span><i class="dot b"></i> Drift</span>
+      <span><i class="dot c"></i> Cushion</span>
+    </div>
   </article>
 
-  <div class="side-stack">
-    <article class="card tip-card">
-      <div class="label">Smart tip</div>
-      <h3>{{ health_reason }}</h3>
-      <div class="muted">{% if health_steps and health_steps|length > 0 %}{{ health_steps[0] }}{% else %}Keep your current pace — it’s working.{% endif %}</div>
+  <article class="card analytics-side">
+    <div class="card-head">
+      <h2>Brand Severity</h2>
+    </div>
+    <div class="donut-wrap">
+      <svg viewBox="0 0 120 120" class="donut" role="img" aria-label="Risk donut">
+        <circle cx="60" cy="60" r="44" class="track"></circle>
+        {% set pct = health_score %}
+        {% set dash = (pct * 2.76) %}
+        <circle cx="60" cy="60" r="44" class="fill" style="stroke-dasharray: {{ dash }} 999;"></circle>
+      </svg>
+      <div class="donut-text">
+        <strong>{{ health_score }}</strong>
+        <small>{{ health_risk|title }}</small>
+      </div>
+    </div>
+    <div class="severity-bars">
+      <div><span>Stability</span><strong>{{ health_breakdown.stability }}%</strong></div>
+      <div><span>Drift</span><strong>{{ health_breakdown.acceleration }}%</strong></div>
+      <div><span>Cushion</span><strong>{{ health_breakdown.cushion }}%</strong></div>
+    </div>
+  </article>
+</section>
+
+<section class="platform-row card">
+  <div class="card-head">
+    <h2>Platform Distribution</h2>
+  </div>
+  <div class="platform-grid">
+    {% for idx in range(1,6) %}
+    <article class="platform-card">
+      <div class="platform-preview"></div>
+      <div class="platform-meta">
+        <strong>Segment {{ idx }}</strong>
+        <small>{{ (health_score + idx * 3) % 100 }} pts</small>
+      </div>
+      <div class="mini-bars">
+        <span style="height: {{ 12 + idx * 3 }}px"></span>
+        <span style="height: {{ 8 + idx * 4 }}px"></span>
+        <span style="height: {{ 10 + idx * 2 }}px"></span>
+        <span style="height: {{ 6 + idx * 3 }}px"></span>
+      </div>
     </article>
-    <details class="card detail-card">
-      <summary>Metric breakdown</summary>
-      <div class="detail-grid">
-        <div>Stability <strong>{{ health_breakdown.stability }}%</strong></div>
-        <div>Drift <strong>{{ health_breakdown.acceleration }}%</strong></div>
-        <div>Cushion <strong>{{ health_breakdown.cushion }}%</strong></div>
-        <div>Runway <strong>{{ health_breakdown.runway }}%</strong></div>
-        <div>Fixed ratio <strong>{{ 100 - health_breakdown.affordability }}%</strong></div>
-        <div>Goal alignment <strong>{{ health_breakdown.goal_alignment }}%</strong></div>
-      </div>
-    </details>
-  </div>
-</section>
-
-<section class="card table-card">
-  <div class="table-head">
-    <div>
-      <h3>Recent checks</h3>
-      <div class="muted">Last {{ history|length }} entries</div>
-    </div>
-    <a class="btn" href="/history">Open history</a>
-  </div>
-
-  <div class="table-wrap">
-    <table class="premium-table">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Daily budget</th>
-          <th>Status</th>
-          <th>Note</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in history %}
-        <tr>
-          <td>{{ item.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
-          <td>${{ "%.2f"|format(item.daily_budget) }}</td>
-          <td><span class="badge chip">{{ item.status }}</span></td>
-          <td>{{ item.message }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    {% endfor %}
   </div>
 </section>
 {% endblock %}

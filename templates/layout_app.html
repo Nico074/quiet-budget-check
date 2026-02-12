@@ -1,57 +1,40 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{% block title %}Momentum Labs{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='cyber.css') }}">
 </head>
-
 <body class="app-shell">
-  <div class="app-layout">
-    {% include "_sidebar.html" %}
+  {% include "_sidebar.html" %}
 
-    <main class="app-main">
-      <header class="topbar">
-        <div class="topbar-inner">
-          <div class="topbar-brand">
-            <span class="ml-logo" aria-hidden="true"><span class="ml-core">M</span></span>
-            <div class="ml-brand-text">
-              <div class="ml-brand-name">Momentum Labs</div>
-              <div class="ml-brand-sub">Behavioral Intelligence</div>
-            </div>
-          </div>
+  <main class="app-main">
+    <header class="app-topbar">
+      <div class="topbar-search">
+        <span class="search-icon" aria-hidden="true">⌘</span>
+        <input type="text" placeholder="Search space, feature, file..." aria-label="Search or command">
+        <kbd>⌘K</kbd>
+      </div>
+      <div class="topbar-controls">
+        <a href="/" class="btn">Home</a>
+        <button type="button" class="top-icon" aria-label="Notifications">●</button>
+        <button type="button" class="top-icon" aria-label="Preferences">◌</button>
+        <a href="/account" class="top-user" aria-label="Account">
+          <span class="avatar">U</span>
+          <span class="user-meta">
+            <strong>Profile</strong>
+            <small>Manage account</small>
+          </span>
+        </a>
+      </div>
+    </header>
 
-          <div class="cmd">
-            <div class="cmd-row">
-              <div class="cmd-input-wrap">
-                <input type="text" placeholder="Search or command" style="width:100%;padding-left:40px;">
-                <span class="cmd-icon">⌘</span>
-              </div>
-              <div class="badge chip chip-sm">⌘K</div>
-            </div>
-          </div>
-
-          <div class="topbar-actions">
-            {% if active_page != "dashboard" %}
-              <a class="btn" href="/dashboard">Dashboard</a>
-            {% endif %}
-            <a class="btn icon-only" href="/account" aria-label="Profile">
-              <span class="user-dot">U</span>
-            </a>
-            <a class="btn" href="/logout">Logout</a>
-          </div>
-        </div>
-      </header>
-
-      <section class="app-content">
-        {% block content %}{% endblock %}
-      </section>
-
-      {% include "_app_footer.html" %}
-    </main>
-  </div>
+    <section class="app-content">
+      {% block content %}{% endblock %}
+    </section>
+  </main>
   {% block scripts %}{% endblock %}
 </body>
 </html>

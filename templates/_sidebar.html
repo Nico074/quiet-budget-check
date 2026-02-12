@@ -1,33 +1,35 @@
-<aside class="sidebar sidebar-panel">
-  <div class="sidebar-brand-wrap">
-    <span class="ml-logo" aria-hidden="true"><span class="ml-core">M</span></span>
-    <div class="ml-brand-text">
-      <div class="ml-brand-name">Momentum Labs</div>
-      <div class="ml-brand-sub">Behavioral Intelligence</div>
+<aside class="app-sidebar">
+  <a class="sidebar-brand" href="/dashboard">
+    <span class="brand-orb" aria-hidden="true">M</span>
+    <span class="brand-copy">
+      <strong>Momentum Labs</strong>
+      <small>Behavioral Intelligence</small>
+    </span>
+  </a>
+
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <a class="sidebar-item {% if active_page == 'dashboard' %}active{% endif %}" href="/dashboard">Dashboard</a>
+      <a class="sidebar-item {% if active_page in ['run-check','run_check'] %}active{% endif %}" href="/run-check">Run a check</a>
+      <a class="sidebar-item {% if active_page == 'history' %}active{% endif %}" href="/history">History</a>
     </div>
-  </div>
 
-  <div class="side-title">Main</div>
-  <nav class="side-nav">
-    <a class="btn {% if active_page == 'dashboard' %}active{% endif %}" href="/dashboard">Dashboard</a>
-    <a class="btn {% if active_page in ['run-check','run_check'] %}active{% endif %}" href="/run-check">Run a check</a>
-    <a class="btn {% if active_page == 'history' %}active{% endif %}" href="/history">History</a>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Growth</div>
+      <a class="sidebar-item {% if active_page == 'goals' %}active{% endif %}" href="/goals">Goals</a>
+      <a class="sidebar-item {% if active_page == 'wallet' %}active{% endif %}" href="/wallet">Wallet overview</a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Account</div>
+      <a class="sidebar-item {% if active_page == 'account' %}active{% endif %}" href="/account">Account</a>
+      <a class="sidebar-item {% if active_page == 'upgrade' %}active{% endif %}" href="/upgrade">Upgrade</a>
+      <a class="sidebar-item {% if active_page == 'billing' %}active{% endif %}" href="/billing">Billing</a>
+    </div>
   </nav>
 
-  <div class="side-title">Growth</div>
-  <nav class="side-nav">
-    <a class="btn {% if active_page == 'goals' %}active{% endif %}" href="/goals">Goals <span class="badge" style="margin-left:6px;padding:2px 8px;">Pro</span></a>
-    <a class="btn {% if active_page == 'wallet' %}active{% endif %}" href="/wallet">Wallet overview</a>
-  </nav>
-
-  <div class="side-title">Account</div>
-  <nav class="side-nav">
-    <a class="btn {% if active_page == 'account' %}active{% endif %}" href="/account">Account</a>
-    <a class="btn {% if active_page == 'upgrade' %}active{% endif %}" href="/upgrade">Upgrade <span class="badge" style="margin-left:6px;padding:2px 8px;">Pro</span></a>
-    <a class="btn {% if active_page == 'billing' %}active{% endif %}" href="/billing">Billing</a>
-  </nav>
-
-  <div class="side-note">
-    Demo mode enabled
+  <div class="sidebar-footer">
+    <a class="sidebar-item logout" href="/logout">Logout</a>
   </div>
 </aside>

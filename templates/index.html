@@ -3,244 +3,103 @@
 {% block body %}
   {% include "_public_header.html" %}
 
-  <main class="container">
-    <section class="hero landing-hero">
-      <div class="hero-left">
-        <div class="hero-intro">
-          <h1>Your money has momentum. We make it visible.</h1>
-          <p class="sub">
-            A Behavioral Financial Intelligence Platform that makes rhythm, drift, and stability clear — fast.
-          </p>
-          <div class="chips chips-left">
-            <span class="chip">Financial Health Score</span>
-            <span class="chip">Momentum Engine</span>
-            <span class="chip">Calm guidance</span>
-          </div>
-          <div class="hero-cta">
-            <a class="btn primary" href="/register">Start free</a>
-          </div>
+  <main class="container home-shell">
+    <section class="home-hero card">
+      <div class="hero-copy">
+        <p class="eyebrow">AI Budget Intelligence</p>
+        <h1>Minimal surface. Maximum signal.</h1>
+        <p class="muted">
+          Momentum Labs turns daily spending into calm, actionable rhythm with one fast check.
+        </p>
+        <div class="button-row">
+          {% if user_id %}
+          <a class="btn primary" href="/dashboard">Open dashboard</a>
+          {% else %}
+          <a class="btn primary" href="/register">Start free</a>
+          {% endif %}
+          <a class="btn" href="/pricing">See plans</a>
         </div>
       </div>
-
-      <div class="hero-demo">
-        <div class="card demo-card">
-          <div class="demo-head">
-            <span class="dot"></span>
-            <h3>What you’ll get</h3>
-          </div>
-
-          <div class="demo-rows">
-            <div class="row"><span id="demoIncomeLabel">Monthly income</span><strong id="demoIncomeVal">$3,200</strong></div>
-            <div class="row"><span id="demoFixedLabel">Fixed expenses</span><strong id="demoFixedVal">$2,100</strong></div>
-            <div class="row"><span id="demoTodayLabel">Today’s spend</span><strong id="demoTodayVal">$160</strong></div>
-            <div class="row"><span id="demoDaysLabel">Days left</span><strong id="demoDaysVal">12</strong></div>
-          </div>
-
-          <div class="demo-box" id="d_box">
-            <strong class="demo-budget" id="d_budget">$91/day</strong>
-            <div class="demo-msg" id="d_msg">This puts serious pressure on your month.</div>
-          </div>
+      <div class="hero-panel">
+        <div class="ai-chip">NeonGrid AI</div>
+        <div class="hero-stat">
+          <span>Financial Health</span>
+          <strong>Live model</strong>
         </div>
-      </div>
-
-      <div class="hero-right">
-        <div class="right-rail">
-          <div class="card form-card">
-            <h2>Run your check</h2>
-
-            <form method="post" action="/check" class="form compact-form">
-              <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
-              <div class="grid">
-                <div>
-                  <label>Period</label>
-                  <select id="period" name="period" class="select-dark" required>
-                    <option value="monthly" selected>Monthly</option>
-                    <option value="fortnightly">Fortnightly (2 weeks)</option>
-                    <option value="weekly">Weekly</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label>Net income (for this period)</label>
-                  <input name="income" placeholder="e.g. 3200" required />
-                </div>
-
-                <div>
-                  <label>Fixed expenses (for this period)</label>
-                  <input name="fixed" placeholder="e.g. 2100" required />
-                </div>
-
-                <div>
-                  <label>Today’s expense</label>
-                  <input name="today" placeholder="e.g. 25" required />
-                </div>
-
-                <div class="full">
-                  <label>Days left in this period</label>
-                  <input name="days_left" placeholder="e.g. 12" required />
-                </div>
-              </div>
-
-              <button type="submit" class="btn-primary">Check</button>
-            </form>
-
-            <div class="result-slot{% if result %} has-result{% endif %}" id="resultSlot">
-              {% if result %}
-              <div class="result {{ result.status|lower }}">
-                <div class="result-top">
-                  <div>
-                    <div class="muted">Estimated daily budget</div>
-                    <div class="big">${{ result.daily_budget }}</div>
-                    <div class="muted">{{ result.message }}</div>
-                  </div>
-                </div>
-              </div>
-              {% endif %}
-            </div>
-            {% if error %}
-            <div class="form-error">{{ error }}</div>
-            {% endif %}
-          </div>
+        <div class="hero-stat">
+          <span>Companion</span>
+          <strong>Adaptive tone</strong>
+        </div>
+        <div class="hero-stat">
+          <span>Run check</span>
+          <strong>Under 10 seconds</strong>
         </div>
       </div>
     </section>
 
-    <section class="section-block" data-reveal>
-      <div class="section-head">
-        <h2>The problem</h2>
-        <p class="muted">Money feels static, but it moves. Most tools ignore the rhythm.</p>
+    <section class="home-check card">
+      <div class="card-head">
+        <h2>Run your check</h2>
+        <span class="chip">Instant preview</span>
       </div>
-      <div class="card-grid">
-        <div class="card">
-          <h2>1. Capture rhythm</h2>
-          <p class="muted">We translate spending pace into behavioral signals.</p>
+      {% if error %}
+      <div class="form-error">{{ error }}</div>
+      {% endif %}
+      <form class="run-form-grid" method="post" action="/check">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+        <label>
+          <span>Period</span>
+          <select name="period">
+            <option value="monthly">Monthly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="weekly">Weekly</option>
+          </select>
+        </label>
+        <label>
+          <span>Days left</span>
+          <input type="number" name="days_left" placeholder="12" required />
+        </label>
+        <label>
+          <span>Net income</span>
+          <input type="number" name="income" placeholder="3200" required />
+        </label>
+        <label>
+          <span>Fixed expenses</span>
+          <input type="number" name="fixed" placeholder="2100" required />
+        </label>
+        <label class="full">
+          <span>Today's expense</span>
+          <input type="number" name="today" placeholder="45" required />
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="btn primary">Run check</button>
+          <a class="btn" href="/dashboard">Dashboard</a>
         </div>
-        <div class="card">
-          <h2>2. See momentum</h2>
-          <p class="muted">A live engine shows drift, stability, and acceleration.</p>
-        </div>
-        <div class="card">
-          <h2>3. Act calmly</h2>
-          <p class="muted">Guided adjustments reduce anxiety and decision time.</p>
-        </div>
+      </form>
+      {% if result %}
+      <div class="check-result">
+        <strong>${{ result.daily_budget }}/day</strong>
+        <span class="chip">{{ result.status|title }}</span>
+        <p class="muted">{{ result.message }}</p>
       </div>
+      {% endif %}
     </section>
 
-    <section class="section-block" data-reveal>
-      <div class="section-head">
-        <h2>Momentum in motion</h2>
-        <p class="muted">Real‑time signals for pace, drift, and stability.</p>
-      </div>
-      <div class="bento-grid landing-bento">
-        <div class="card bento-card wide momentum-hero">
-          <div class="bento-title">Momentum Engine</div>
-          <div class="bento-sub">Visualizes acceleration, drift, and stability in real time.</div>
-          <div class="momentum-track">
-            <div class="momentum-aura"></div>
-            <div class="momentum-line"></div>
-          </div>
-          <div class="momentum-meta">
-            <span>Steady</span>
-            <span class="muted">Reactive, not harsh</span>
-            <span>Drifting</span>
-          </div>
-        </div>
-        <div class="card bento-card">
-          <div class="bento-title">Behavioral intelligence</div>
-          <div class="bento-sub">We detect rhythm shifts, friction, and deviation patterns early.</div>
-          <div class="bento-pill">Pattern detection</div>
-        </div>
-        <div class="card bento-card">
-          <div class="bento-title">Financial Health Score</div>
-          <div class="bento-sub">A live score reflecting stability, cushion, and drift.</div>
-          <div class="score-ring" style="--score: 78;">
-            <span class="score-value">78</span>
-            <span class="score-trend up">▲ +4</span>
-          </div>
-        </div>
-      </div>
+    <section class="home-grid">
+      <article class="card feature-card">
+        <h3>Dashboard</h3>
+        <p class="muted">Floor-style overview with KPI cards, chart panel, and recent checks.</p>
+      </article>
+      <article class="card feature-card">
+        <h3>Run a check</h3>
+        <p class="muted">Period input, live pace preview, and scenario notes in one clean workspace.</p>
+      </article>
+      <article class="card feature-card">
+        <h3>History + Goals</h3>
+        <p class="muted">Track streaks, drift trends, and target progress with consistent spacing.</p>
+      </article>
     </section>
-
-    <section class="section-block" data-reveal>
-      <div class="section-head">
-        <h2>Proof in practice</h2>
-        <p class="muted">Pro reduces anxiety, saves decision time, and detects drift early.</p>
-      </div>
-      {% include "_plans_grid.html" %}
-    </section>
-
-    <section class="section-block testimonials" data-reveal>
-      <div class="section-head">
-        <h2>Social proof</h2>
-        <p class="muted">Real calm, real outcomes.</p>
-      </div>
-      <div class="card-grid">
-        <div class="card">
-          <p>“I stopped second‑guessing. Momentum makes my next move obvious.”</p>
-          <div class="muted small">— Sam, product lead</div>
-        </div>
-        <div class="card">
-          <p>“The score and projections cut my budgeting time in half.”</p>
-          <div class="muted small">— Alex, freelancer</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section-block faq" data-reveal>
-      <div class="section-head">
-        <h2>FAQ</h2>
-        <p class="muted">Clear answers, no jargon.</p>
-      </div>
-      <details>
-        <summary>Do you store my data?</summary>
-        <p>Yes for logged-in users. We store only what’s needed to power your score and history.</p>
-      </details>
-      <details>
-        <summary>Is the Health Score reliable?</summary>
-        <p>It’s based on stability, drift, cushion, and consistency—not credit scoring.</p>
-      </details>
-      <details>
-        <summary>How does Momentum Engine work?</summary>
-        <p>It visualizes your pace and drift in near real time using your inputs.</p>
-      </details>
-      <details>
-        <summary>Can I cancel Pro anytime?</summary>
-        <p>Yes. You can downgrade anytime without penalties.</p>
-      </details>
-      <details>
-        <summary>Is this financial advice?</summary>
-        <p>No. It’s a behavioral signal to guide decisions, not a guarantee.</p>
-      </details>
-      <details>
-        <summary>How do I get support?</summary>
-        <p>Use the in‑app assistant or contact support from your account page.</p>
-      </details>
-    </section>
-
-    </main>
+  </main>
 
   {% include "_public_footer.html" %}
-
-  <script src="/static/demo.js"></script>
-  {% if result %}
-  <script>
-    const slot = document.getElementById("resultSlot");
-    if (slot) {
-      slot.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  </script>
-  {% endif %}
-  <script>
-    const hadResult = {{ "true" if result else "false" }};
-    if ("scrollRestoration" in history) {
-      history.scrollRestoration = "manual";
-    }
-    if (window.location.search) {
-      history.replaceState({}, document.title, window.location.pathname);
-    }
-    if (!hadResult) {
-      window.scrollTo(0, 0);
-    }
-  </script>
 {% endblock %}
-

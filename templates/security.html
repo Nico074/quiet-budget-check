@@ -2,16 +2,49 @@
 {% block title %}Security • Momentum Labs{% endblock %}
 {% block body %}
   {% include "_public_header.html" %}
-  <main class="container">
+  <main class="container security-shell">
     <section class="section-block">
       <div class="section-head">
-        <h2>Security</h2>
-        <p class="muted">How we protect data and operate the platform safely.</p>
+        <h2>Security Center</h2>
+        <p class="muted">Protect your account, credentials, and access sessions.</p>
       </div>
-      <div class="card">
-        <p class="muted">Security page placeholder. Compliance and controls documentation will be added here.</p>
+      <div class="card security-info">
+        <p class="muted">2FA and device controls are on the roadmap. You can already rotate your password securely.</p>
       </div>
     </section>
+
+    {% if user_id %}
+    <section class="section-block">
+      <div class="card security-form-wrap">
+        <h3>Change password</h3>
+        {% if password_error %}
+        <div class="form-error">{{ password_error }}</div>
+        {% endif %}
+        {% if password_success %}
+        <div class="chip">{{ password_success }}</div>
+        {% endif %}
+        <form method="post" action="/security/password" class="run-form-grid">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+          <label class="full">
+            <span>Current password</span>
+            <input type="password" name="current_password" required />
+          </label>
+          <label>
+            <span>New password</span>
+            <input type="password" name="new_password" minlength="8" maxlength="72" required />
+          </label>
+          <label>
+            <span>Confirm new password</span>
+            <input type="password" name="confirm_password" minlength="8" maxlength="72" required />
+          </label>
+          <div class="form-actions">
+            <button class="btn primary" type="submit">Update password</button>
+            <a class="btn" href="/account#security">Back to account</a>
+          </div>
+        </form>
+      </div>
+    </section>
+    {% endif %}
   </main>
   {% include "_public_footer.html" %}
 {% endblock %}

@@ -6,18 +6,25 @@
       <span class="ml-brand-sub">Behavioral Intelligence</span>
     </span>
   </a>
-  {% if user_id %}
+
   <nav class="header-nav">
+    <a class="{% if request.url.path == '/' %}active{% endif %}" href="/">Home</a>
+    <a class="{% if request.url.path == '/pricing' %}active{% endif %}" href="/pricing">Pricing</a>
+    <a class="{% if request.url.path == '/about' %}active{% endif %}" href="/about">About</a>
+    <a class="{% if request.url.path == '/contact' %}active{% endif %}" href="/contact">Contact</a>
+    <a class="{% if request.url.path == '/security' %}active{% endif %}" href="/security">Security</a>
+    {% if user_id %}
     <a class="{% if request.url.path == '/dashboard' %}active{% endif %}" href="/dashboard">Dashboard</a>
+    {% endif %}
   </nav>
-  {% endif %}
+
   <div class="header-actions">
     {% if user_id %}
     <a href="/account" class="btn icon-only" aria-label="Profile"><span class="user-dot">U</span></a>
     <a href="/logout" class="btn">Logout</a>
     {% else %}
     <a href="/login" class="btn">Log in</a>
-    <a href="/register" class="btn-ghost">Register</a>
+    <a href="/register" class="btn primary">Start free</a>
     {% endif %}
   </div>
 </header>

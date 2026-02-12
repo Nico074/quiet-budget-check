@@ -11,6 +11,7 @@ import secrets
 import time
 import os
 import logging
+from datetime import datetime, timedelta
 
 from db import engine, init_db, User, CheckHistory, Profile, HealthScoreHistory
 from plans import PLANS
@@ -31,6 +32,7 @@ STRIPE_PORTAL_RETURN_URL = os.getenv("STRIPE_PORTAL_RETURN_URL", f"{APP_BASE_URL
 # Demo mode: keep all pages accessible during Phase 2 UI work.
 PRO_PAYWALL_ENABLED = False
 DEMO_MODE = os.getenv("DEMO_MODE", "false").lower() == "true"
+DEMO_PRO_EMAIL = "admin@test.com"
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -177,7 +179,89 @@ def get_plan_state_for_user(user_id: int | None):
 
     with Session(engine) as session:
         user = session.exec(select(User).where(User.id == user_id)).first()
-        if user and user.plan:
+        if not user:
+            return "free"
+        email = (user.email or "").strip().lower()
+        if email == DEMO_PRO_EMAIL:
+            changed = False
+            if user.plan != "pro":
+                user.plan = "pro"
+                user.stripe_status = "active"
+                changed = True
+
+            profile = session.exec(select(Profile).where(Profile.user_id == user_id)).first()
+            if not profile:
+                profile = Profile(
+                    user_id=user_id,
+                    first_name="Admin",
+                    last_name="User",
+                    city="Demo City",
+                    country="Demo Land",
+                    companion_tone="coach",
+                )
+                session.add(profile)
+                changed = True
+
+            has_history = session.exec(
+                select(CheckHistory)
+                .where(CheckHistory.user_id == user_id)
+                .limit(1)
+            ).first()
+            if not has_history:
+                sample_runs = [
+                    {"income": 3600.0, "fixed": 2150.0, "today": 72.0, "days": 14},
+                    {"income": 3600.0, "fixed": 2150.0, "today": 81.0, "days": 13},
+                    {"income": 3600.0, "fixed": 2150.0, "today": 96.0, "days": 12},
+                    {"income": 3600.0, "fixed": 2150.0, "today": 108.0, "days": 11},
+                    {"income": 3600.0, "fixed": 2150.0, "today": 84.0, "days": 10},
+                    {"income": 3600.0, "fixed": 2150.0, "today": 118.0, "days": 9},
+                ]
+                now = datetime.utcnow()
+                for idx, run in enumerate(sample_runs):
+                    budget, status, msg = analyser_depense(run["income"], run["fixed"], run["today"], run["days"])
+                    session.add(
+                        CheckHistory(
+                            user_id=user_id,
+                            net_income=run["income"],
+                            fixed_expenses=run["fixed"],
+                            today_expense=run["today"],
+                            days_left=run["days"],
+                            daily_budget=float(budget),
+                            status=status,
+                            message=msg,
+                            created_at=now - timedelta(days=(len(sample_runs) - idx)),
+                        )
+                    )
+                changed = True
+
+            has_scores = session.exec(
+                select(HealthScoreHistory)
+                .where(HealthScoreHistory.user_id == user_id)
+                .limit(1)
+            ).first()
+            if not has_scores:
+                recent = session.exec(
+                    select(CheckHistory)
+                    .where(CheckHistory.user_id == user_id)
+                    .order_by(CheckHistory.created_at.desc())
+                    .limit(20)
+                ).all()
+                score, meta = compute_health_score(recent)
+                session.add(
+                    HealthScoreHistory(
+                        user_id=user_id,
+                        score=score,
+                        label=health_label(score),
+                        reason=health_reason(recent, meta["breakdown"]),
+                    )
+                )
+                changed = True
+
+            if changed:
+                session.commit()
+            return "pro"
+
+        if user.plan:
             return user.plan
     return "free"
 
@@ -551,7 +635,96 @@ def contact_page(request: Request):
 
 @app.get("/security", response_class=HTMLResponse)
 def security_page(request: Request):
-    return render_template("security.html", {"request": request, "user_id": get_user_id_from_request(request)})
+    user_id = get_user_id_from_request(request)
+    return render_template(
+        "security.html",
+        {
+            "request": request,
+            "user_id": user_id,
+            "active_page": "account",
+            "password_error": None,
+            "password_success": None,
+        },
+    )
+
+
+@app.post("/security/password", response_class=HTMLResponse)
+def security_password_update(
+    request: Request,
+    csrf_token: str = Form(""),
+    current_password: str = Form(""),
+    new_password: str = Form(""),
+    confirm_password: str = Form(""),
+):
+    user_id = get_user_id_from_request(request)
+    if not user_id:
+        return RedirectResponse(url="/login", status_code=303)
+    if not validate_csrf(request, csrf_token):
+        return render_template(
+            "security.html",
+            {
+                "request": request,
+                "user_id": user_id,
+                "active_page": "account",
+                "password_error": "Session expired. Please try again.",
+                "password_success": None,
+            },
+        )
+
+    current_password = current_password.strip()
+    new_password = new_password.strip()
+    confirm_password = confirm_password.strip()
+
+    if len(new_password) < 8 or len(new_password) > 72:
+        return render_template(
+            "security.html",
+            {
+                "request": request,
+                "user_id": user_id,
+                "active_page": "account",
+                "password_error": "New password must be 8-72 characters.",
+                "password_success": None,
+            },
+        )
+    if new_password != confirm_password:
+        return render_template(
+            "security.html",
+            {
+                "request": request,
+                "user_id": user_id,
+                "active_page": "account",
+                "password_error": "New password and confirmation do not match.",
+                "password_success": None,
+            },
+        )
+
+    with Session(engine) as session:
+        user = session.exec(select(User).where(User.id == user_id)).first()
+        if not user or not pwd_context.verify(current_password, user.password_hash):
+            return render_template(
+                "security.html",
+                {
+                    "request": request,
+                    "user_id": user_id,
+                    "active_page": "account",
+                    "password_error": "Current password is incorrect.",
+                    "password_success": None,
+                },
+            )
+        user.password_hash = pwd_context.hash(new_password)
+        session.add(user)
+        session.commit()
+
+    return render_template(
+        "security.html",
+        {
+            "request": request,
+            "user_id": user_id,
+            "active_page": "account",
+            "password_error": None,
+            "password_success": "Password updated successfully.",
+        },
+    )
 
 
 @app.get("/social/twitter", response_class=HTMLResponse)
@@ -731,6 +904,7 @@ def login(
             record_login_failure(ip)
             return render_template("login.html", {"request": request, "error": "Invalid credentials."})
 
+    get_plan_state_for_user(user.id)
     resp = RedirectResponse(url="/dashboard", status_code=303)
     set_auth_cookie(resp, user.id)
     clear_login_failures(ip)
@@ -749,6 +923,7 @@ def dashboard(request: Request):
     user_id = get_user_id_from_request(request)
     if not user_id:
         return RedirectResponse(url="/login", status_code=303)
+    plan_state = get_plan_state_for_user(user_id)
 
     try:
         history = get_recent_history(user_id, limit=5)
@@ -778,7 +953,6 @@ def dashboard(request: Request):
     else:
         pace_status = "ok"
 
-    plan_state = get_plan_state_for_user(user_id)
     health_score, health_meta = compute_health_score(history)
     health_label_text = health_label(health_score)
     health_reason_text = last_score.reason if last_score else health_reason(history, health_meta["breakdown"])
