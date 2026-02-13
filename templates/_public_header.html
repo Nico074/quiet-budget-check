@@ -1,18 +1,18 @@
 <header class="container header sticky">
   <a class="brand" href="/">
-    <span class="ml-logo" aria-hidden="true"><span class="ml-core">M</span></span>
+    <span class="ml-logo" aria-hidden="true"><span class="ml-core">I</span></span>
     <span class="ml-brand-text">
-      <span class="ml-brand-name">Momentum Labs</span>
-      <span class="ml-brand-sub">Behavioral Intelligence</span>
+      <span class="ml-brand-name">Investing</span>
+      <span class="ml-brand-sub">Finance Intelligence</span>
     </span>
   </a>
 
   <nav class="header-nav">
-    <a class="{% if request.url.path == '/' %}active{% endif %}" href="/">Home</a>
-    <a class="{% if request.url.path == '/pricing' %}active{% endif %}" href="/pricing">Pricing</a>
-    <a class="{% if request.url.path == '/about' %}active{% endif %}" href="/about">About</a>
-    <a class="{% if request.url.path == '/contact' %}active{% endif %}" href="/contact">Contact</a>
-    <a class="{% if request.url.path == '/security' %}active{% endif %}" href="/security">Security</a>
+    <a class="{% if request.url.path == '/' %}active{% endif %}" href="/">Accueil</a>
+    <a class="{% if request.url.path == '/pricing' %}active{% endif %}" href="/pricing">Marches</a>
+    <a class="{% if request.url.path == '/about' %}active{% endif %}" href="/about">Avis</a>
+    <a class="{% if request.url.path == '/contact' %}active{% endif %}" href="/contact">Blog</a>
+    <a class="{% if request.url.path == '/security' %}active{% endif %}" href="/security">Securite</a>
     {% if user_id %}
     <a class="{% if request.url.path == '/dashboard' %}active{% endif %}" href="/dashboard">Dashboard</a>
     {% endif %}
@@ -21,10 +21,10 @@
   <div class="header-actions">
     {% if user_id %}
     <a href="/account" class="btn icon-only" aria-label="Profile"><span class="user-dot">U</span></a>
-    <a href="/logout" class="btn">Logout</a>
+    <a href="/logout" class="btn">Deconnexion</a>
     {% else %}
-    <a href="/login" class="btn">Log in</a>
-    <a href="/register" class="btn primary">Start free</a>
+    <a href="/login" class="btn">Se connecter</a>
+    <a href="/register" class="btn primary">S'inscrire</a>
     {% endif %}
   </div>
 </header>

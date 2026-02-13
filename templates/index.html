@@ -5,42 +5,63 @@
 
   <main class="container home-shell">
     <section class="home-hero card">
-      <div class="hero-copy">
-        <p class="eyebrow">AI Budget Intelligence</p>
-        <h1>Minimal surface. Maximum signal.</h1>
-        <p class="muted">
-          Momentum Labs turns daily spending into calm, actionable rhythm with one fast check.
-        </p>
-        <div class="button-row">
-          {% if user_id %}
-          <a class="btn primary" href="/dashboard">Open dashboard</a>
-          {% else %}
-          <a class="btn primary" href="/register">Start free</a>
-          {% endif %}
-          <a class="btn" href="/pricing">See plans</a>
+      <div class="home-hero-top">
+        <div class="hero-copy">
+          <p class="eyebrow">Plateforme d'investissement intelligente</p>
+          <h1>Investissez dans votre avenir financier.</h1>
+          <p class="muted">
+            Prenez des decisions eclairees et faites fructifier votre capital.
+          </p>
+          <div class="button-row">
+            {% if user_id %}
+            <a class="btn primary" href="/dashboard">Commencer</a>
+            {% else %}
+            <a class="btn primary" href="/register">Commencer</a>
+            {% endif %}
+            <a class="btn" href="/pricing">En savoir plus</a>
+          </div>
         </div>
+        <div class="hero-visual" aria-hidden="true"></div>
       </div>
-      <div class="hero-panel">
-        <div class="ai-chip">NeonGrid AI</div>
-        <div class="hero-stat">
-          <span>Financial Health</span>
-          <strong>Live model</strong>
-        </div>
-        <div class="hero-stat">
-          <span>Companion</span>
-          <strong>Adaptive tone</strong>
-        </div>
-        <div class="hero-stat">
-          <span>Run check</span>
-          <strong>Under 10 seconds</strong>
-        </div>
+
+      <div class="hero-panel home-feature-strip">
+        <article class="hero-stat feature-tile">
+          <strong>Analyse de Marche</strong>
+          <span>Tendances et opportunites en temps reel.</span>
+        </article>
+        <article class="hero-stat feature-tile">
+          <strong>Conseils d'Experts</strong>
+          <span>Strategies pour investir avec precision.</span>
+        </article>
+        <article class="hero-stat feature-tile">
+          <strong>Suivi de Portefeuille</strong>
+          <span>Visualisez vos performances clairement.</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="home-skyline card" aria-label="Market skyline visual">
+      <p class="muted skyline-copy">Investissez intelligemment. Maximisez vos gains.</p>
+      <div class="skyline-bars" aria-hidden="true">
+        <span style="--h:36%"></span>
+        <span style="--h:48%"></span>
+        <span style="--h:30%"></span>
+        <span style="--h:62%"></span>
+        <span style="--h:66%"></span>
+        <span style="--h:41%"></span>
+        <span style="--h:75%"></span>
+        <span style="--h:58%"></span>
+        <span style="--h:70%"></span>
+        <span style="--h:44%"></span>
+        <span style="--h:80%"></span>
+        <span style="--h:63%"></span>
       </div>
     </section>
 
     <section class="home-check card">
       <div class="card-head">
         <h2>Run your check</h2>
-        <span class="chip">Instant preview</span>
+        <span class="chip">Instantane</span>
       </div>
       {% if error %}
       <div class="form-error">{{ error }}</div>
@@ -48,7 +69,7 @@
       <form class="run-form-grid" method="post" action="/check">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
         <label>
-          <span>Period</span>
+          <span>Periode</span>
           <select name="period">
             <option value="monthly">Monthly</option>
             <option value="fortnightly">Fortnightly</option>
@@ -56,23 +77,23 @@
           </select>
         </label>
         <label>
-          <span>Days left</span>
+          <span>Jours restants</span>
           <input type="number" name="days_left" placeholder="12" required />
         </label>
         <label>
-          <span>Net income</span>
+          <span>Revenu net</span>
           <input type="number" name="income" placeholder="3200" required />
         </label>
         <label>
-          <span>Fixed expenses</span>
+          <span>Charges fixes</span>
           <input type="number" name="fixed" placeholder="2100" required />
         </label>
         <label class="full">
-          <span>Today's expense</span>
+          <span>Depense du jour</span>
           <input type="number" name="today" placeholder="45" required />
         </label>
         <div class="form-actions">
-          <button type="submit" class="btn primary">Run check</button>
+          <button type="submit" class="btn primary">Lancer</button>
           <a class="btn" href="/dashboard">Dashboard</a>
         </div>
       </form>
@@ -83,21 +104,6 @@
         <p class="muted">{{ result.message }}</p>
       </div>
       {% endif %}
-    </section>
-
-    <section class="home-grid">
-      <article class="card feature-card">
-        <h3>Dashboard</h3>
-        <p class="muted">Floor-style overview with KPI cards, chart panel, and recent checks.</p>
-      </article>
-      <article class="card feature-card">
-        <h3>Run a check</h3>
-        <p class="muted">Period input, live pace preview, and scenario notes in one clean workspace.</p>
-      </article>
-      <article class="card feature-card">
-        <h3>History + Goals</h3>
-        <p class="muted">Track streaks, drift trends, and target progress with consistent spacing.</p>
-      </article>
     </section>
   </main>
 
