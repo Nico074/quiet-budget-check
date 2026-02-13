@@ -6,22 +6,24 @@
   <title>{% block title %}Momentum Labs{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='cyber.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='theme_clone.css') }}">
 </head>
 <body class="app-shell">
   {% include "_sidebar.html" %}
 
   <main class="app-main">
-    <header class="app-topbar">
+    <header class="app-topbar topbar glass">
       <a class="topbar-brand" href="/dashboard" aria-label="Brand">
         <span class="brand-orb" aria-hidden="true">I</span>
         <strong>Investing</strong>
       </a>
-      <div class="topbar-search">
+      <div class="topbar-search input">
         <span class="search-icon" aria-hidden="true">Q</span>
-        <input type="text" placeholder="Rechercher un actif, une vue, une action..." aria-label="Search or command">
+        <input type="text" placeholder="Search assets, views, actions..." aria-label="Search or command">
         <kbd>Ctrl K</kbd>
       </div>
       <div class="topbar-controls">
+        <a href="/" class="btn btn-secondary">Home</a>
         <button type="button" class="top-icon" aria-label="Search">S</button>
         <button type="button" class="top-icon" aria-label="Notifications">N</button>
         <button type="button" class="top-icon" aria-label="Preferences">P</button>

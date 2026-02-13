@@ -1,47 +1,77 @@
 {% extends "layout_public.html" %}
 {% block title %}Momentum Labs{% endblock %}
 {% block body %}
-  {% include "_public_header.html" %}
+<header class="container header sticky">
+  <a class="brand" href="/">
+    <span class="ml-logo" aria-hidden="true"><span class="ml-core">I</span></span>
+    <span class="ml-brand-text">
+      <span class="ml-brand-name">Investing</span>
+      <span class="ml-brand-sub">Behavioral Intelligence</span>
+    </span>
+  </a>
 
-  <main class="container home-shell">
-    <section class="home-hero card">
+  <nav class="header-nav">
+    <a class="{% if request.url.path == '/' %}active{% endif %}" href="/">Home</a>
+    <a class="{% if request.url.path == '/pricing' %}active{% endif %}" href="/pricing">Markets</a>
+    <a class="{% if request.url.path == '/about' %}active{% endif %}" href="/about">Reviews</a>
+    <a class="{% if request.url.path == '/contact' %}active{% endif %}" href="/contact">Blog</a>
+    <a class="{% if request.url.path == '/security' %}active{% endif %}" href="/security">Security</a>
+    {% if user_id %}
+    <a class="{% if request.url.path == '/dashboard' %}active{% endif %}" href="/dashboard">Dashboard</a>
+    {% endif %}
+  </nav>
+
+  <div class="header-actions">
+    {% if user_id %}
+    <a href="/account" class="btn icon-only" aria-label="Profile"><span class="user-dot">U</span></a>
+    <a href="/logout" class="btn">Sign out</a>
+    {% else %}
+    <a href="/login" class="btn">Sign in</a>
+    <a href="/register" class="btn primary">Start free</a>
+    {% endif %}
+  </div>
+</header>
+
+  <main class="container home-shell shell">
+    <section class="home-hero card glass-strong">
       <div class="home-hero-top">
         <div class="hero-copy">
-          <p class="eyebrow">Plateforme d'investissement intelligente</p>
-          <h1>Investissez dans votre avenir financier.</h1>
+          <p class="eyebrow">Intelligent Investing Platform</p>
+          <h1>Invest in your financial future.</h1>
           <p class="muted">
-            Prenez des decisions eclairees et faites fructifier votre capital.
+            Make informed decisions and grow your capital with clear market signals.
           </p>
           <div class="button-row">
             {% if user_id %}
-            <a class="btn primary" href="/dashboard">Commencer</a>
+            <a class="btn primary btn-primary" href="/dashboard">Get started</a>
             {% else %}
-            <a class="btn primary" href="/register">Commencer</a>
+            <a class="btn primary btn-primary" href="/register">Get started</a>
             {% endif %}
-            <a class="btn" href="/pricing">En savoir plus</a>
+            <a class="btn btn-secondary" href="/pricing">Learn more</a>
           </div>
         </div>
-        <div class="hero-visual" aria-hidden="true"></div>
-      </div>
 
-      <div class="hero-panel home-feature-strip">
-        <article class="hero-stat feature-tile">
-          <strong>Analyse de Marche</strong>
-          <span>Tendances et opportunites en temps reel.</span>
-        </article>
-        <article class="hero-stat feature-tile">
-          <strong>Conseils d'Experts</strong>
-          <span>Strategies pour investir avec precision.</span>
-        </article>
-        <article class="hero-stat feature-tile">
-          <strong>Suivi de Portefeuille</strong>
-          <span>Visualisez vos performances clairement.</span>
-        </article>
+        <div class="hero-visual" aria-hidden="true"></div>
+
+        <aside class="hero-feature-col">
+          <article class="feature-tile glass">
+            <strong>Market Analysis</strong>
+            <span>Real-time trends and opportunities.</span>
+          </article>
+          <article class="feature-tile glass">
+            <strong>Expert Guidance</strong>
+            <span>Strategies to optimize investments.</span>
+          </article>
+          <article class="feature-tile glass">
+            <strong>Portfolio Tracking</strong>
+            <span>Monitor performance with clarity.</span>
+          </article>
+        </aside>
       </div>
     </section>
 
-    <section class="home-skyline card" aria-label="Market skyline visual">
-      <p class="muted skyline-copy">Investissez intelligemment. Maximisez vos gains.</p>
+    <section class="home-skyline card glass" aria-label="Market skyline visual">
+      <p class="muted skyline-copy">Invest intelligently. Maximize your gains.</p>
       <div class="skyline-bars" aria-hidden="true">
         <span style="--h:36%"></span>
         <span style="--h:48%"></span>
@@ -58,10 +88,10 @@
       </div>
     </section>
 
-    <section class="home-check card">
+    <section class="home-check card glass">
       <div class="card-head">
         <h2>Run your check</h2>
-        <span class="chip">Instantane</span>
+        <span class="chip">Instant</span>
       </div>
       {% if error %}
       <div class="form-error">{{ error }}</div>
@@ -69,7 +99,7 @@
       <form class="run-form-grid" method="post" action="/check">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
         <label>
-          <span>Periode</span>
+          <span>Period</span>
           <select name="period">
             <option value="monthly">Monthly</option>
             <option value="fortnightly">Fortnightly</option>
@@ -77,31 +107,31 @@
           </select>
         </label>
         <label>
-          <span>Jours restants</span>
+          <span>Days left</span>
           <input type="number" name="days_left" placeholder="12" required />
         </label>
         <label>
-          <span>Revenu net</span>
+          <span>Net income</span>
           <input type="number" name="income" placeholder="3200" required />
         </label>
         <label>
-          <span>Charges fixes</span>
+          <span>Fixed expenses</span>
           <input type="number" name="fixed" placeholder="2100" required />
         </label>
         <label class="full">
-          <span>Depense du jour</span>
+          <span>Today's expense</span>
           <input type="number" name="today" placeholder="45" required />
         </label>
         <div class="form-actions">
-          <button type="submit" class="btn primary">Lancer</button>
-          <a class="btn" href="/dashboard">Dashboard</a>
+          <button type="submit" class="btn primary btn-primary">Run check</button>
+          <a class="btn btn-secondary" href="/dashboard">Dashboard</a>
         </div>
       </form>
       {% if result %}
       <div class="check-result">
         <strong>${{ result.daily_budget }}/day</strong>
-        <span class="chip">{{ result.status|title }}</span>
-        <p class="muted">{{ result.message }}</p>
+        <span class="chip">{% if result.status == "ok" %}On track{% elif result.status == "caution" %}Caution{% else %}Risk{% endif %}</span>
+        <p class="muted">{% if result.status == "ok" %}You are on track.{% elif result.status == "caution" %}You still have funds, stay mindful.{% else %}Funds are low, plan carefully.{% endif %}</p>
       </div>
       {% endif %}
     </section>

@@ -2,14 +2,14 @@
 {% block title %}Dashboard - Momentum Labs{% endblock %}
 {% block content %}
 <section class="dashboard-welcome">
-  <h1>Bienvenue, Alex!</h1>
-  <p>Voici un apercu de vos investissements.</p>
+  <h1>Welcome, Alex!</h1>
+  <p>Here is an overview of your investments.</p>
 </section>
 
 <section class="analytics-grid">
-  <article class="card analytics-main">
+  <article class="card analytics-main glass-strong">
     <div class="card-head">
-      <h2>Valeur du Portefeuille</h2>
+      <h2>Portfolio Value</h2>
       <div class="chip-row">
         <span class="chip">1H</span>
         <span class="chip">TD</span>
@@ -17,8 +17,8 @@
       </div>
     </div>
     <div class="portfolio-value">
-      <strong>23 850 EUR</strong>
-      <span class="up">+4.28% Aujourd'hui</span>
+      <strong>23,850 EUR</strong>
+      <span class="up">+4.28% Today</span>
     </div>
     <svg viewBox="0 0 800 260" class="line-graph" role="img" aria-label="Portfolio value trend chart">
       <defs>
@@ -32,9 +32,9 @@
     </svg>
   </article>
 
-  <article class="card analytics-side">
+  <article class="card analytics-side glass">
     <div class="card-head">
-      <h2>Repartition des Actifs</h2>
+      <h2>Asset Allocation</h2>
     </div>
     <div class="donut-wrap">
       <svg viewBox="0 0 120 120" class="donut" role="img" aria-label="Asset allocation donut">
@@ -49,84 +49,84 @@
       </div>
     </div>
     <div class="severity-bars">
-      <div><span>Actions</span><strong>{{ health_breakdown.stability }}%</strong></div>
+      <div><span>Stocks</span><strong>{{ health_breakdown.stability }}%</strong></div>
       <div><span>Crypto</span><strong>{{ health_breakdown.acceleration }}%</strong></div>
-      <div><span>Liquidites</span><strong>{{ health_breakdown.cushion }}%</strong></div>
+      <div><span>Liquidity</span><strong>{{ health_breakdown.cushion }}%</strong></div>
     </div>
   </article>
 </section>
 
 <section class="dashboard-lower-grid">
-  <article class="card news-card">
+  <article class="card news-card glass">
     <div class="card-head">
-      <h2>Dernieres Actualites</h2>
-      <a href="/history" class="chip">Historique</a>
+      <h2>Latest News</h2>
+      <a href="/history" class="chip">History</a>
     </div>
     <ul class="news-list">
       <li>
-        <a href="/history">La Fed maintient ses taux d'interet.</a>
+        <a href="/history">The Fed keeps interest rates unchanged.</a>
         <small>20:15</small>
       </li>
       <li>
-        <a href="/goals">Tesla publie ses resultats trimestriels.</a>
+        <a href="/goals">Tesla publishes quarterly results.</a>
         <small>20:32</small>
       </li>
       <li>
-        <a href="/run-check">Nouvelle opportunite sur les marches.</a>
+        <a href="/run-check">New market opportunity detected.</a>
         <small>21:03</small>
       </li>
     </ul>
   </article>
 
-  <article class="card alerts-card">
+  <article class="card alerts-card glass">
     <div class="card-head">
-      <h2>Alertes de Marche</h2>
+      <h2>Market Alerts</h2>
       <span class="chip">Live</span>
     </div>
     <ul class="alerts-list">
-      <li><span class="alert-dot"></span><span>Profil de risque: {{ health_risk|title }}</span></li>
-      <li><span class="alert-dot"></span><span>Tendance hebdo: {% if health_trend >= 0 %}+{% endif %}{{ health_trend }}</span></li>
+      <li><span class="alert-dot"></span><span>Risk profile: {{ health_risk|title }}</span></li>
+      <li><span class="alert-dot"></span><span>Weekly trend: {% if health_trend >= 0 %}+{% endif %}{{ health_trend }}</span></li>
       <li><span class="alert-dot"></span><span>{{ health_reason }}</span></li>
     </ul>
   </article>
 </section>
 
 <section class="dash-grid">
-  <div class="kpi-card card">
+  <div class="kpi-card card glass">
     <span class="kpi-title">Health Score</span>
     <strong class="kpi-value">{{ health_score }}</strong>
     <span class="kpi-delta {% if health_trend >= 0 %}up{% else %}down{% endif %}">
       {% if health_trend >= 0 %}+{% endif %}{{ health_trend }} this week
     </span>
   </div>
-  <div class="kpi-card card">
+  <div class="kpi-card card glass">
     <span class="kpi-title">Stable Streak</span>
     <strong class="kpi-value">{{ streaks.stable }} days</strong>
     <span class="kpi-delta up">Pace controlled</span>
   </div>
-  <div class="kpi-card card">
+  <div class="kpi-card card glass">
     <span class="kpi-title">Adjustment Streak</span>
     <strong class="kpi-value">{{ streaks.adjust }} days</strong>
     <span class="kpi-delta">Small corrections</span>
   </div>
-  <div class="kpi-card card">
+  <div class="kpi-card card glass">
     <span class="kpi-title">Risk Level</span>
     <strong class="kpi-value">{{ health_risk|title }}</strong>
     <span class="kpi-delta">{{ health_reason }}</span>
   </div>
 </section>
 
-<section class="platform-row card watchlist-row">
+<section class="platform-row card watchlist-row glass">
   <div class="card-head">
-    <h2>Mes Actions</h2>
+    <h2>My Stocks</h2>
   </div>
   <div class="watchlist-table-wrap">
     <table class="watchlist-table">
       <thead>
         <tr>
-          <th>Actif</th>
+          <th>Asset</th>
           <th>Signal</th>
-          <th>Tendance</th>
+          <th>Trend</th>
           <th>Score</th>
         </tr>
       </thead>
