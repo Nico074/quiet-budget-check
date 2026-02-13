@@ -1,5 +1,5 @@
 <aside class="app-sidebar glass">
-  <a class="sidebar-brand" href="/dashboard">
+  <a class="sidebar-brand" href="/dashboard" aria-label="Dashboard home">
     <span class="brand-orb" aria-hidden="true">I</span>
     <span class="brand-copy">
       <strong>Investing</strong>
@@ -7,22 +7,16 @@
     </span>
   </a>
 
-  <nav class="sidebar-nav">
-    <div class="sidebar-section">
-      <a class="sidebar-item" href="/">Home</a>
-      <a class="sidebar-item {% if active_page == 'dashboard' %}active{% endif %}" href="/dashboard">Dashboard</a>
-      <a class="sidebar-item {% if active_page in ['run-check','run_check'] %}active{% endif %}" href="/run-check">Portfolio</a>
-      <a class="sidebar-item {% if active_page == 'history' %}active{% endif %}" href="/history">Markets</a>
-      <a class="sidebar-item {% if active_page == 'goals' %}active{% endif %}" href="/goals">Alerts</a>
-      <a class="sidebar-item {% if active_page == 'wallet' %}active{% endif %}" href="/wallet">Education</a>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-label">Account</div>
-      <a class="sidebar-item {% if active_page == 'account' %}active{% endif %}" href="/account">Profile</a>
-      <a class="sidebar-item {% if active_page == 'upgrade' %}active{% endif %}" href="/upgrade">Upgrade</a>
-      <a class="sidebar-item {% if active_page == 'billing' %}active{% endif %}" href="/billing">Billing</a>
-    </div>
+  <nav class="sidebar-nav" aria-label="Sidebar navigation">
+    <a class="sidebar-item" href="/">Home</a>
+    <a class="sidebar-item {% if active_page == 'dashboard' %}active{% endif %}" href="/dashboard">Dashboard</a>
+    <a class="sidebar-item {% if active_page in ['run-check','run_check'] %}active{% endif %}" href="/run-check">Portfolio</a>
+    <a class="sidebar-item {% if active_page == 'history' %}active{% endif %}" href="/history">Markets</a>
+    <a class="sidebar-item {% if active_page == 'goals' %}active{% endif %}" href="/goals">Alerts</a>
+    <a class="sidebar-item {% if active_page == 'wallet' %}active{% endif %}" href="/wallet">Education</a>
+    <a class="sidebar-item {% if active_page == 'account' %}active{% endif %}" href="/account">Account</a>
+    <a class="sidebar-item {% if active_page == 'billing' %}active{% endif %}" href="/billing">Billing</a>
+    <a class="sidebar-item {% if active_page == 'upgrade' %}active{% endif %}" href="/upgrade">Upgrade</a>
   </nav>
 
   <div class="sidebar-footer">

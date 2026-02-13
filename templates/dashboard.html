@@ -1,38 +1,35 @@
 {% extends "layout_app.html" %}
-{% block title %}Dashboard - Momentum Labs{% endblock %}
+{% block title %}Dashboard - Investing{% endblock %}
 {% block content %}
 <section class="dashboard-welcome">
-  <h1>Welcome, Alex!</h1>
+  <h1>Welcome, {{ first_name|title }}!</h1>
   <p>Here is an overview of your investments.</p>
 </section>
 
 <section class="analytics-grid">
-  <article class="card analytics-main glass-strong">
+  <article class="analytics-main glass-strong">
     <div class="card-head">
       <h2>Portfolio Value</h2>
       <div class="chip-row">
         <span class="chip">1H</span>
         <span class="chip">TD</span>
         <span class="chip">1M</span>
+        <span class="chip">1Y</span>
       </div>
     </div>
+
     <div class="portfolio-value">
       <strong>23,850 EUR</strong>
       <span class="up">+4.28% Today</span>
     </div>
-    <svg viewBox="0 0 800 260" class="line-graph" role="img" aria-label="Portfolio value trend chart">
-      <defs>
-        <linearGradient id="lineA" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#7ec7ff"/>
-          <stop offset="100%" stop-color="#4d95ff"/>
-        </linearGradient>
-      </defs>
+
+    <svg viewBox="0 0 800 260" class="line-graph" role="img" aria-label="Portfolio trend chart">
       <polyline points="0,192 70,166 140,179 210,170 280,182 350,154 420,160 490,138 560,148 630,120 700,128 770,102 800,108"></polyline>
       <polyline class="secondary" points="0,216 70,198 140,205 210,202 280,197 350,188 420,192 490,182 560,186 630,178 700,180 770,170 800,174"></polyline>
     </svg>
   </article>
 
-  <article class="card analytics-side glass">
+  <article class="analytics-side glass">
     <div class="card-head">
       <h2>Asset Allocation</h2>
     </div>
@@ -57,28 +54,19 @@
 </section>
 
 <section class="dashboard-lower-grid">
-  <article class="card news-card glass">
+  <article class="news-card glass">
     <div class="card-head">
       <h2>Latest News</h2>
       <a href="/history" class="chip">History</a>
     </div>
     <ul class="news-list">
-      <li>
-        <a href="/history">The Fed keeps interest rates unchanged.</a>
-        <small>20:15</small>
-      </li>
-      <li>
-        <a href="/goals">Tesla publishes quarterly results.</a>
-        <small>20:32</small>
-      </li>
-      <li>
-        <a href="/run-check">New market opportunity detected.</a>
-        <small>21:03</small>
-      </li>
+      <li><a href="/history">The Fed keeps interest rates unchanged.</a><small>20:15</small></li>
+      <li><a href="/goals">Tesla publishes quarterly results.</a><small>20:32</small></li>
+      <li><a href="/run-check">New market opportunity detected.</a><small>21:03</small></li>
     </ul>
   </article>
 
-  <article class="card alerts-card glass">
+  <article class="alerts-card glass">
     <div class="card-head">
       <h2>Market Alerts</h2>
       <span class="chip">Live</span>
@@ -92,31 +80,32 @@
 </section>
 
 <section class="dash-grid">
-  <div class="kpi-card card glass">
+  <div class="kpi-card glass">
     <span class="kpi-title">Health Score</span>
     <strong class="kpi-value">{{ health_score }}</strong>
-    <span class="kpi-delta {% if health_trend >= 0 %}up{% else %}down{% endif %}">
-      {% if health_trend >= 0 %}+{% endif %}{{ health_trend }} this week
-    </span>
+    <span class="kpi-delta {% if health_trend >= 0 %}up{% else %}down{% endif %}">{% if health_trend >= 0 %}+{% endif %}{{ health_trend }} this week</span>
   </div>
-  <div class="kpi-card card glass">
+
+  <div class="kpi-card glass">
     <span class="kpi-title">Stable Streak</span>
     <strong class="kpi-value">{{ streaks.stable }} days</strong>
     <span class="kpi-delta up">Pace controlled</span>
   </div>
-  <div class="kpi-card card glass">
+
+  <div class="kpi-card glass">
     <span class="kpi-title">Adjustment Streak</span>
     <strong class="kpi-value">{{ streaks.adjust }} days</strong>
     <span class="kpi-delta">Small corrections</span>
   </div>
-  <div class="kpi-card card glass">
+
+  <div class="kpi-card glass">
     <span class="kpi-title">Risk Level</span>
     <strong class="kpi-value">{{ health_risk|title }}</strong>
     <span class="kpi-delta">{{ health_reason }}</span>
   </div>
 </section>
 
-<section class="platform-row card watchlist-row glass">
+<section class="watchlist-row glass">
   <div class="card-head">
     <h2>My Stocks</h2>
   </div>

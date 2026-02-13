@@ -1,16 +1,15 @@
 {% extends "layout_public.html" %}
-{% block title %}Momentum Labs{% endblock %}
+{% block title %}Investing - Home{% endblock %}
 {% block body %}
-<header class="container header sticky">
-  <a class="brand" href="/">
-    <span class="ml-logo" aria-hidden="true"><span class="ml-core">I</span></span>
-    <span class="ml-brand-text">
-      <span class="ml-brand-name">Investing</span>
-      <span class="ml-brand-sub">Behavioral Intelligence</span>
+<header class="container header glass">
+  <a class="brand" href="/" aria-label="Home">
+    <span class="brand-orb" aria-hidden="true">I</span>
+    <span class="brand-copy">
+      <strong>Investing</strong>
     </span>
   </a>
 
-  <nav class="header-nav">
+  <nav class="header-nav" aria-label="Primary">
     <a class="{% if request.url.path == '/' %}active{% endif %}" href="/">Home</a>
     <a class="{% if request.url.path == '/pricing' %}active{% endif %}" href="/pricing">Markets</a>
     <a class="{% if request.url.path == '/about' %}active{% endif %}" href="/about">Reviews</a>
@@ -23,119 +22,127 @@
 
   <div class="header-actions">
     {% if user_id %}
-    <a href="/account" class="btn icon-only" aria-label="Profile"><span class="user-dot">U</span></a>
+    <a href="/dashboard" class="btn btn-secondary">Dashboard</a>
     <a href="/logout" class="btn">Sign out</a>
     {% else %}
     <a href="/login" class="btn">Sign in</a>
-    <a href="/register" class="btn primary">Start free</a>
+    <a href="/register" class="btn primary">Sign up</a>
     {% endif %}
   </div>
 </header>
 
-  <main class="container home-shell shell">
-    <section class="home-hero card glass-strong">
-      <div class="home-hero-top">
-        <div class="hero-copy">
-          <p class="eyebrow">Intelligent Investing Platform</p>
-          <h1>Invest in your financial future.</h1>
-          <p class="muted">
-            Make informed decisions and grow your capital with clear market signals.
-          </p>
-          <div class="button-row">
-            {% if user_id %}
-            <a class="btn primary btn-primary" href="/dashboard">Get started</a>
-            {% else %}
-            <a class="btn primary btn-primary" href="/register">Get started</a>
-            {% endif %}
-            <a class="btn btn-secondary" href="/pricing">Learn more</a>
-          </div>
+<main class="container home-shell">
+  <section class="home-hero glass-strong">
+    <div class="home-hero-top">
+      <div class="hero-copy">
+        <h1>Invest in your financial future.</h1>
+        <p class="muted">Make smarter decisions and grow your capital with clear, real-time market intelligence.</p>
+        <div class="button-row">
+          {% if user_id %}
+          <a class="btn primary" href="/dashboard">Get started</a>
+          {% else %}
+          <a class="btn primary" href="/register">Get started</a>
+          {% endif %}
+          <a class="btn btn-secondary" href="/pricing">Learn more</a>
         </div>
-
-        <div class="hero-visual" aria-hidden="true"></div>
-
-        <aside class="hero-feature-col">
-          <article class="feature-tile glass">
-            <strong>Market Analysis</strong>
-            <span>Real-time trends and opportunities.</span>
-          </article>
-          <article class="feature-tile glass">
-            <strong>Expert Guidance</strong>
-            <span>Strategies to optimize investments.</span>
-          </article>
-          <article class="feature-tile glass">
-            <strong>Portfolio Tracking</strong>
-            <span>Monitor performance with clarity.</span>
-          </article>
-        </aside>
       </div>
-    </section>
 
-    <section class="home-skyline card glass" aria-label="Market skyline visual">
-      <p class="muted skyline-copy">Invest intelligently. Maximize your gains.</p>
-      <div class="skyline-bars" aria-hidden="true">
-        <span style="--h:36%"></span>
-        <span style="--h:48%"></span>
-        <span style="--h:30%"></span>
-        <span style="--h:62%"></span>
-        <span style="--h:66%"></span>
-        <span style="--h:41%"></span>
-        <span style="--h:75%"></span>
-        <span style="--h:58%"></span>
-        <span style="--h:70%"></span>
-        <span style="--h:44%"></span>
-        <span style="--h:80%"></span>
-        <span style="--h:63%"></span>
-      </div>
-    </section>
+      <div class="hero-visual" aria-hidden="true"></div>
 
-    <section class="home-check card glass">
-      <div class="card-head">
-        <h2>Run your check</h2>
-        <span class="chip">Instant</span>
-      </div>
-      {% if error %}
-      <div class="form-error">{{ error }}</div>
-      {% endif %}
-      <form class="run-form-grid" method="post" action="/check">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
-        <label>
-          <span>Period</span>
-          <select name="period">
-            <option value="monthly">Monthly</option>
-            <option value="fortnightly">Fortnightly</option>
-            <option value="weekly">Weekly</option>
-          </select>
-        </label>
-        <label>
-          <span>Days left</span>
-          <input type="number" name="days_left" placeholder="12" required />
-        </label>
-        <label>
-          <span>Net income</span>
-          <input type="number" name="income" placeholder="3200" required />
-        </label>
-        <label>
-          <span>Fixed expenses</span>
-          <input type="number" name="fixed" placeholder="2100" required />
-        </label>
-        <label class="full">
-          <span>Today's expense</span>
-          <input type="number" name="today" placeholder="45" required />
-        </label>
-        <div class="form-actions">
-          <button type="submit" class="btn primary btn-primary">Run check</button>
-          <a class="btn btn-secondary" href="/dashboard">Dashboard</a>
-        </div>
-      </form>
-      {% if result %}
-      <div class="check-result">
-        <strong>${{ result.daily_budget }}/day</strong>
-        <span class="chip">{% if result.status == "ok" %}On track{% elif result.status == "caution" %}Caution{% else %}Risk{% endif %}</span>
-        <p class="muted">{% if result.status == "ok" %}You are on track.{% elif result.status == "caution" %}You still have funds, stay mindful.{% else %}Funds are low, plan carefully.{% endif %}</p>
-      </div>
-      {% endif %}
-    </section>
-  </main>
+      <aside class="hero-feature-col" aria-label="Features">
+        <article class="feature-tile">
+          <strong>Market Analysis</strong>
+          <span>Real-time trends and opportunities.</span>
+        </article>
+        <article class="feature-tile">
+          <strong>Expert Guidance</strong>
+          <span>Strategies to optimize your investments.</span>
+        </article>
+        <article class="feature-tile">
+          <strong>Portfolio Tracking</strong>
+          <span>Monitor performance with full clarity.</span>
+        </article>
+      </aside>
+    </div>
+  </section>
 
-  {% include "_public_footer.html" %}
+  <section class="home-skyline glass" aria-label="Market skyline">
+    <p class="skyline-copy">Invest intelligently. Maximize your gains.</p>
+    <div class="skyline-bars" aria-hidden="true">
+      <span style="--h:34%"></span><span style="--h:45%"></span><span style="--h:31%"></span>
+      <span style="--h:62%"></span><span style="--h:70%"></span><span style="--h:47%"></span>
+      <span style="--h:76%"></span><span style="--h:58%"></span><span style="--h:67%"></span>
+      <span style="--h:44%"></span><span style="--h:81%"></span><span style="--h:63%"></span>
+    </div>
+  </section>
+
+  <section class="home-check glass">
+    <div class="card-head">
+      <h2>Run your check</h2>
+      <span class="chip">Instant</span>
+    </div>
+
+    {% if error %}
+    <div class="form-error">{{ error }}</div>
+    {% endif %}
+
+    <form class="run-form-grid" method="post" action="/check">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+
+      <label>
+        <span>Period</span>
+        <select name="period" class="input-field">
+          <option value="monthly">Monthly</option>
+          <option value="fortnightly">Fortnightly</option>
+          <option value="weekly">Weekly</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Days left</span>
+        <input class="input-field" type="number" name="days_left" placeholder="12" required />
+      </label>
+
+      <label>
+        <span>Net income</span>
+        <input class="input-field" type="number" name="income" placeholder="3200" required />
+      </label>
+
+      <label>
+        <span>Fixed expenses</span>
+        <input class="input-field" type="number" name="fixed" placeholder="2100" required />
+      </label>
+
+      <label class="full">
+        <span>Today's expense</span>
+        <input class="input-field" type="number" name="today" placeholder="45" required />
+      </label>
+
+      <div class="form-actions">
+        <button type="submit" class="btn primary">Run check</button>
+        <a class="btn btn-secondary" href="/dashboard">Dashboard</a>
+      </div>
+    </form>
+
+    {% if result %}
+    <div class="check-result">
+      <strong>${{ result.daily_budget }}/day</strong>
+      <span class="chip">{% if result.status == "ok" %}On track{% elif result.status == "caution" %}Caution{% else %}Risk{% endif %}</span>
+      <p class="muted">
+        {% if result.status == "ok" %}
+        You're on track.
+        {% elif result.status == "caution" %}
+        You still have funds - just stay mindful.
+        {% else %}
+        Funds are low - careful planning helps here.
+        {% endif %}
+      </p>
+    </div>
+    {% endif %}
+  </section>
+</main>
+
+<footer class="container site-footer">
+  <p>Investing platform - premium budgeting intelligence.</p>
+</footer>
 {% endblock %}
